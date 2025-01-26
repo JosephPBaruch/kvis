@@ -36,7 +36,7 @@ The frontend is built with React and Vite. It makes requests to the backend to f
 1. **Clone the repository:**
 
     ```sh
-    git clone https://github.com/yourusername/kvis.git
+    git clone https://github.com/JosephPBaruch/kvis.git
     cd kvis
     ```
 

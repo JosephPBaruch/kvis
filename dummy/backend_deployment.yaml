@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kvis-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: kvis-backend
+  template:
+    metadata:
+      labels:
+        app: kvis-backend
+    spec:
+      containers:
+      - name: kvis-backend
+        image: k3d-local-registry:5001/kvis-backend:latest
+        ports:
+        - containerPort: 8082

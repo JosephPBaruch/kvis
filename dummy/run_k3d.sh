@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Variables
+HOSTNAME="k3d-local-registry"
+IP="127.0.0.1"
+HOSTS_FILE="/etc/hosts"
+CLIENT_IMAGE="kvis-client:latest"
+BACKEND_IMAGE="kvis-backend:latest"
+REGISTRY="k3d-local-registry:5001"
+
 # Check if k3d is installed
 if ! command -v k3d &> /dev/null
 then
@@ -10,14 +18,11 @@ else
 fi
 
 # Check if the cluster is already running
-if k3d cluster list | grep -q 'mycluster'
+if k3d cluster list | grep -q 'dummy-cluster'
 then
-    echo "k3d cluster 'mycluster' is already running. Deleting the existing cluster..."
-    k3d cluster delete mycluster
+    echo "k3d cluster 'dummy-cluster' is already running. Deleting the existing cluster..."
+    k3d cluster delete dummy-cluster
 fi
-
-# Create a new k3d cluster
-echo "Creating k3d cluster..."
 
 # Check if the local registry is already running
 if k3d registry list | grep -q 'k3d-local-registry'
@@ -26,37 +31,30 @@ then
     k3d registry delete k3d-local-registry
 fi
 
+# Create a new k3d registry
 k3d registry create local-registry --port 5001
 
-#!/bin/bash
-
-# Define the hostname and IP mapping
-HOSTNAME="k3d-local-registry"
-IP="127.0.0.1"
-HOSTS_FILE="/etc/hosts"
-
-# Check if the hostname already exists in /etc/hosts
+# Add the hostname to /etc/hosts if it doesn't exist
 if grep -q "$HOSTNAME" "$HOSTS_FILE"; then
-  echo "The hostname '$HOSTNAME' already exists in $HOSTS_FILE."
+    echo "The hostname '$HOSTNAME' already exists in $HOSTS_FILE."
 else
-  # Add the hostname to /etc/hosts
-  echo "Adding '$HOSTNAME' to $HOSTS_FILE..."
-  echo "$IP $HOSTNAME" | sudo tee -a "$HOSTS_FILE" > /dev/null
+    echo "Adding '$HOSTNAME' to $HOSTS_FILE..."
+    echo "$IP $HOSTNAME" | sudo tee -a "$HOSTS_FILE" > /dev/null
 
-  # Confirm the addition
-  if grep -q "$HOSTNAME" "$HOSTS_FILE"; then
-    echo "Successfully added '$HOSTNAME' to $HOSTS_FILE."
-  else
-    echo "Failed to add '$HOSTNAME' to $HOSTS_FILE. Please check permissions."
-  fi
+    if grep -q "$HOSTNAME" "$HOSTS_FILE"; then
+        echo "Successfully added '$HOSTNAME' to $HOSTS_FILE."
+    else
+        echo "Failed to add '$HOSTNAME' to $HOSTS_FILE. Please check permissions."
+    fi
 fi
 
-k3d cluster create mycluster --registry-use k3d-local-registry:5001
+# Create a new k3d cluster
+k3d cluster create dummy-cluster --registry-use $REGISTRY
 
 # Check if the cluster is running
-if k3d cluster list | grep -q 'mycluster'
+if k3d cluster list | grep -q 'dummy-cluster'
 then
-    echo "k3d cluster 'mycluster' is up and running."
+    echo "k3d cluster 'dummy-cluster' is up and running."
 else
     echo "Failed to create k3d cluster."
     exit 1
@@ -64,12 +62,32 @@ fi
 
 echo "You can now use kubectl to interact with your k3d cluster."
 
-docker tag kvis-client:latest k3d-local-registry:5001/kvis-client:latest
+# Check if the client image exists, if not build it
+if [[ "$(docker images -q $CLIENT_IMAGE 2> /dev/null)" == "" ]]; then
+    echo "Building the client Docker image..."
+    cd ../client
+    ./run_client.sh
+    cd ../dummy
+fi
 
-docker push k3d-local-registry:5001/kvis-client:latest
-# Check with
-# curl http://localhost:5001/v2/_catalog
+# Check if the backend image exists, if not build it
+if [[ "$(docker images -q $BACKEND_IMAGE 2> /dev/null)" == "" ]]; then
+    echo "Building the backend Docker image..."
+    cd ../backend
+    ./go_docker.sh
+    cd ../dummy
+fi
 
+# Tag and push the Docker images to the local registry
+docker tag $CLIENT_IMAGE $REGISTRY/$CLIENT_IMAGE
+docker tag $BACKEND_IMAGE $REGISTRY/$BACKEND_IMAGE
+
+docker push $REGISTRY/$CLIENT_IMAGE
+docker push $REGISTRY/$BACKEND_IMAGE
+
+# Apply the Kubernetes deployments and services
 kubectl apply -f client_deployment.yaml
 kubectl apply -f client_service.yaml
+kubectl apply -f backend_deployment.yaml
+kubectl apply -f backend_service.yaml
 kubectl apply -f deployment.yaml

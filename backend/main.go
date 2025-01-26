@@ -9,6 +9,6 @@ import (
 
 func main() {
 	routes.RegisterRoutes()
-	fmt.Println("Server is running on port 8080...")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	fmt.Println("Server is running on port 8082...")
+	log.Fatal(http.ListenAndServe(":8082", nil))
 }

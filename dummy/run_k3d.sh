@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# filepath: /Users/joseph.baruch/REPO/kvis/dummy/run_k3d.sh
+
 # Variables
 HOSTNAME="k3d-local-registry"
 IP="127.0.0.1"
@@ -49,7 +51,17 @@ else
 fi
 
 # Create a new k3d cluster
-k3d cluster create dummy-cluster --registry-use $REGISTRY
+# k3d cluster create dummy-cluster \
+#     --port 8081:8081@loadbalancer \
+#     --registry-use $REGISTRY
+
+k3d cluster create dummy-cluster \
+    --api-port 6550 \
+    -p "8081:8081@loadbalancer" \
+    -p "8082:8082@loadbalancer" \
+    --agents 2 \
+    --registry-use $REGISTRY
+
 
 # Check if the cluster is running
 if k3d cluster list | grep -q 'dummy-cluster'
@@ -66,7 +78,7 @@ echo "You can now use kubectl to interact with your k3d cluster."
 if [[ "$(docker images -q $CLIENT_IMAGE 2> /dev/null)" == "" ]]; then
     echo "Building the client Docker image..."
     cd ../client
-    ./run_client.sh
+    docker build -t $CLIENT_IMAGE .
     cd ../dummy
 fi
 
@@ -74,7 +86,7 @@ fi
 if [[ "$(docker images -q $BACKEND_IMAGE 2> /dev/null)" == "" ]]; then
     echo "Building the backend Docker image..."
     cd ../backend
-    ./go_docker.sh
+    docker build -t $BACKEND_IMAGE .
     cd ../dummy
 fi
 
@@ -86,6 +98,7 @@ docker push $REGISTRY/$CLIENT_IMAGE
 docker push $REGISTRY/$BACKEND_IMAGE
 
 # Apply the Kubernetes deployments and services
+kubectl apply -f ingress.yaml
 kubectl apply -f client_deployment.yaml
 kubectl apply -f client_service.yaml
 kubectl apply -f backend_deployment.yaml

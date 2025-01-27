@@ -23,7 +23,7 @@ WORKDIR /root/
 # Copy the built application from the builder stage
 COPY --from=builder /app/main .
 
-# Expose port 8080
+# Expose port 8082
 EXPOSE 8082
 
 # Run the application

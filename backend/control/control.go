@@ -1,17 +1,14 @@
 package control
 
 import (
+	"backend/types"
 	"bytes"
 	"encoding/json"
 	"os/exec"
 	"strings"
 )
 
-type Resource struct {
-	Name string `json:"name"`
-}
-
-func Get(option string) ([]Resource, error) {
+func Get(option string) ([]types.Resource, error) {
 	cmd := exec.Command("kubectl", "get", option, "--all-namespaces", "-o", "json")
 	var out bytes.Buffer
 	cmd.Stdout = &out
@@ -34,48 +31,16 @@ func Get(option string) ([]Resource, error) {
 		return nil, err
 	}
 
-	var resources []Resource
+	var resources []types.Resource
 	for _, item := range result.Items {
-		resources = append(resources, Resource{Name: item.Metadata.Name})
+		resources = append(resources, types.Resource{Name: item.Metadata.Name})
 	}
 
 	return resources, nil
 }
 
-type ResourceDetails struct {
-	Name           string `json:"name"`
-	Namespace      string `json:"namespace"`
-	Priority       string `json:"priority"`
-	ServiceAccount string `json:"serviceAccount"`
-	Node           string `json:"node"`
-	StartTime      string `json:"startTime"`
-	Labels         string `json:"labels"`
-	Annotations    string `json:"annotations"`
-	Status         string `json:"status"`
-	IP             string `json:"ip"`
-	ControlledBy   string `json:"controlledBy"`
-	ContainerID    string `json:"containerID"`
-	Image          string `json:"image"`
-	ImageID        string `json:"imageID"`
-	Port           string `json:"port"`
-	HostPort       string `json:"hostPort"`
-	State          string `json:"state"`
-	Started        string `json:"started"`
-	Ready          string `json:"ready"`
-	RestartCount   string `json:"restartCount"`
-	Environment    string `json:"environment"`
-	Mounts         string `json:"mounts"`
-	Conditions     string `json:"conditions"`
-	Volumes        string `json:"volumes"`
-	QoSClass       string `json:"qosClass"`
-	NodeSelectors  string `json:"nodeSelectors"`
-	Tolerations    string `json:"tolerations"`
-	Events         string `json:"events"`
-	Logs           string `json:"logs"`
-}
-
-func GetPodDetails(podName string) (*ResourceDetails, error) {
-	details := &ResourceDetails{}
+func GetPodDetails(podName string) (*types.ResourceDetails, error) {
+	details := &types.ResourceDetails{}
 	// Get describe
 	describeCmd := exec.Command("kubectl", "describe", "pod", podName)
 	var describeOut bytes.Buffer
@@ -162,8 +127,8 @@ func GetPodDetails(podName string) (*ResourceDetails, error) {
 	return details, nil
 }
 
-func GetNodeDetails(nodeName string) (*ResourceDetails, error) {
-	details := &ResourceDetails{}
+func GetNodeDetails(nodeName string) (*types.ResourceDetails, error) {
+	details := &types.ResourceDetails{}
 	// Get describe
 	describeCmd := exec.Command("kubectl", "describe", "node", nodeName)
 	var describeOut bytes.Buffer
@@ -210,8 +175,8 @@ func GetNodeDetails(nodeName string) (*ResourceDetails, error) {
 	return details, nil
 }
 
-func GetDeploymentDetails(deploymentName string) (*ResourceDetails, error) {
-	details := &ResourceDetails{}
+func GetDeploymentDetails(deploymentName string) (*types.ResourceDetails, error) {
+	details := &types.ResourceDetails{}
 	// Get describe
 	describeCmd := exec.Command("kubectl", "describe", "deployment", deploymentName)
 	var describeOut bytes.Buffer
@@ -256,8 +221,8 @@ func GetDeploymentDetails(deploymentName string) (*ResourceDetails, error) {
 	return details, nil
 }
 
-func GetServiceDetails(serviceName string) (*ResourceDetails, error) {
-	details := &ResourceDetails{}
+func GetServiceDetails(serviceName string) (*types.ResourceDetails, error) {
+	details := &types.ResourceDetails{}
 	// Get describe
 	describeCmd := exec.Command("kubectl", "describe", "service", serviceName)
 	var describeOut bytes.Buffer
@@ -302,8 +267,8 @@ func GetServiceDetails(serviceName string) (*ResourceDetails, error) {
 	return details, nil
 }
 
-func GetNamespaceDetails(namespaceName string) (*ResourceDetails, error) {
-	details := &ResourceDetails{}
+func GetNamespaceDetails(namespaceName string) (*types.ResourceDetails, error) {
+	details := &types.ResourceDetails{}
 	// Get describe
 	describeCmd := exec.Command("kubectl", "describe", "namespace", namespaceName)
 	var describeOut bytes.Buffer
@@ -346,8 +311,8 @@ func GetNamespaceDetails(namespaceName string) (*ResourceDetails, error) {
 	return details, nil
 }
 
-func GetConfigMapDetails(configMapName string) (*ResourceDetails, error) {
-	details := &ResourceDetails{}
+func GetConfigMapDetails(configMapName string) (*types.ResourceDetails, error) {
+	details := &types.ResourceDetails{}
 	// Get describe
 	describeCmd := exec.Command("kubectl", "describe", "configmap", configMapName)
 	var describeOut bytes.Buffer
@@ -392,8 +357,8 @@ func GetConfigMapDetails(configMapName string) (*ResourceDetails, error) {
 	return details, nil
 }
 
-func GetPVCDetails(pvcName string) (*ResourceDetails, error) {
-	details := &ResourceDetails{}
+func GetPVCDetails(pvcName string) (*types.ResourceDetails, error) {
+	details := &types.ResourceDetails{}
 	// Get describe
 	describeCmd := exec.Command("kubectl", "describe", "pvc", pvcName)
 	var describeOut bytes.Buffer
@@ -438,17 +403,8 @@ func GetPVCDetails(pvcName string) (*ResourceDetails, error) {
 	return details, nil
 }
 
-type EndpointDetails struct {
-	Name        string `json:"name"`
-	Namespace   string `json:"namespace"`
-	Labels      string `json:"labels"`
-	Annotations string `json:"annotations"`
-	IP          string `json:"ip"`
-	Port        string `json:"port"`
-}
-
-func GetEndpointDetails(endpointName string) (*EndpointDetails, error) {
-	details := &EndpointDetails{}
+func GetEndpointDetails(endpointName string) (*types.EndpointDetails, error) {
+	details := &types.EndpointDetails{}
 	// Get describe
 	describeCmd := exec.Command("kubectl", "describe", "endpoints", endpointName)
 	var describeOut bytes.Buffer
@@ -484,8 +440,8 @@ func GetEndpointDetails(endpointName string) (*EndpointDetails, error) {
 	return details, nil
 }
 
-func GetIngressDetails(ingressName string) (*ResourceDetails, error) {
-	details := &ResourceDetails{}
+func GetIngressDetails(ingressName string) (*types.ResourceDetails, error) {
+	details := &types.ResourceDetails{}
 	// Get describe
 	describeCmd := exec.Command("kubectl", "describe", "ingress", ingressName)
 	var describeOut bytes.Buffer

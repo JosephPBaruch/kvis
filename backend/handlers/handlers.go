@@ -32,7 +32,7 @@ func PodByNameHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
-	details, err := control.GetResourceDetails("pod", id)
+	details, err := control.GetPodDetails(id)
 	if err != nil {
 		http.Error(w, "Failed to get pod details", http.StatusInternalServerError)
 		return
@@ -60,7 +60,7 @@ func NodeByNameHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
-	details, err := control.GetResourceDetails("node", id)
+	details, err := control.GetNodeDetails(id)
 	if err != nil {
 		http.Error(w, "Failed to get node details", http.StatusInternalServerError)
 		return
@@ -88,7 +88,7 @@ func DeploymentByNameHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
-	details, err := control.GetResourceDetails("deployment", id)
+	details, err := control.GetDeploymentDetails(id)
 	if err != nil {
 		http.Error(w, "Failed to get deployment details", http.StatusInternalServerError)
 		return
@@ -116,7 +116,7 @@ func ServiceByNameHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
-	details, err := control.GetResourceDetails("service", id)
+	details, err := control.GetServiceDetails(id)
 	if err != nil {
 		http.Error(w, "Failed to get service details", http.StatusInternalServerError)
 		return
@@ -144,7 +144,7 @@ func NamespaceByNameHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
-	details, err := control.GetResourceDetails("namespace", id)
+	details, err := control.GetNamespaceDetails(id)
 	if err != nil {
 		http.Error(w, "Failed to get namespace details", http.StatusInternalServerError)
 		return
@@ -172,7 +172,7 @@ func ConfigMapByNameHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
-	details, err := control.GetResourceDetails("configmap", id)
+	details, err := control.GetConfigMapDetails(id)
 	if err != nil {
 		http.Error(w, "Failed to get configmap details", http.StatusInternalServerError)
 		return
@@ -200,7 +200,7 @@ func PVCByNameHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
-	details, err := control.GetResourceDetails("pvc", id)
+	details, err := control.GetPVCDetails(id)
 	if err != nil {
 		http.Error(w, "Failed to get PVC details", http.StatusInternalServerError)
 		return
@@ -228,7 +228,7 @@ func IngressByNameHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
-	details, err := control.GetResourceDetails("ingress", id)
+	details, err := control.GetIngressDetails(id)
 	if err != nil {
 		http.Error(w, "Failed to get ingress details", http.StatusInternalServerError)
 		return
@@ -256,7 +256,7 @@ func EndpointByNameHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
-	details, err := control.GetResourceDetails("endpoint", id)
+	details, err := control.GetEndpointDetails(id)
 	if err != nil {
 		http.Error(w, "Failed to get endpoint details", http.StatusInternalServerError)
 		return

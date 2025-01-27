@@ -29,7 +29,6 @@ The frontend is built with React and Vite. It makes requests to the backend to f
 - Docker
 - kubectl
 - k3d (for running a local Kubernetes cluster)
-- Go (for running the backend)
 
 ### Running the Project
 
@@ -40,76 +39,32 @@ The frontend is built with React and Vite. It makes requests to the backend to f
     cd kvis
     ```
 
-2. **Create a symbolic link to the [kvis.sh](http://_vscodecontentref_/2) script:**
-
-    ```sh
-    ./link.sh
-    ```
-
-3. **Run the project:**
-
-    ```sh
-    kvis
-    ```
-
-4. **Run the project with the [dummy](http://_vscodecontentref_/3) script:**
-
-    ```sh
-    kvis dummy
-    ```
-
-### Running the Backend and Frontend Separately
-
-#### Backend
-
-To run the backend separately:
-
-1. **Navigate to the backend directory:**
+2. **Build and run the backend:**
 
     ```sh
     cd backend
+    docker build -t kvis-backend .
+    docker run -d -p 8080:8080 --name kvis-backend kvis-backend
     ```
 
-2. **Run the backend:**
+3. **Build and run the frontend:**
 
     ```sh
-    go run main.go
+    cd ../frontend
+    docker build -t kvis-frontend .
+    docker run -d -p 80:80 --name kvis-frontend kvis-frontend
     ```
 
-#### Frontend
-
-To run the frontend separately:
-
-1. **Navigate to the client directory:**
+4. **Run a local Kubernetes cluster using k3d:**
 
     ```sh
-    cd client
+    k3d cluster create mycluster
     ```
 
-2. **Run the frontend:**
+5. **Access the frontend:**
 
-    ```sh
-    ./run_client.sh
-    ```
-
-### Running a Local Kubernetes Cluster Using k3d
-
-1. **Run the [run_k3d.sh](http://_vscodecontentref_/4) script:**
-
-    ```sh
-    ./dummy/run_k3d.sh
-    ```
-
-2. **Apply the deployment:**
-
-    ```sh
-    kubectl apply -f /Users/joseph.baruch/REPO/kvis/dummy/deployment.yaml
-    ```
-
-### Accessing the Frontend
-
-Open your browser and navigate to [http://localhost:8081](http://_vscodecontentref_/5).
+    Open your browser and navigate to `http://localhost`.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](http://_vscodecontentref_/6) file for details.
+This project is licensed under the MIT License - see the [LICENSE](http://_vscodecontentref_/1) file for details.

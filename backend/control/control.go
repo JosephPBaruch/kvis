@@ -74,11 +74,10 @@ type ResourceDetails struct {
 	Logs           string `json:"logs"`
 }
 
-func GetResourceDetails(resourceType, resourceName string) (*ResourceDetails, error) {
+func GetPodDetails(podName string) (*ResourceDetails, error) {
 	details := &ResourceDetails{}
-
 	// Get describe
-	describeCmd := exec.Command("kubectl", "describe", resourceType, resourceName)
+	describeCmd := exec.Command("kubectl", "describe", "pod", podName)
 	var describeOut bytes.Buffer
 	describeCmd.Stdout = &describeOut
 	err := describeCmd.Run()
@@ -150,16 +149,382 @@ func GetResourceDetails(resourceType, resourceName string) (*ResourceDetails, er
 		}
 	}
 
-	// Get logs (only for pods)
-	if resourceType == "pod" {
-		logsCmd := exec.Command("kubectl", "logs", resourceName)
-		var logsOut bytes.Buffer
-		logsCmd.Stdout = &logsOut
-		err := logsCmd.Run()
-		if err != nil {
-			return nil, err
+	// Get logs
+	logsCmd := exec.Command("kubectl", "logs", podName)
+	var logsOut bytes.Buffer
+	logsCmd.Stdout = &logsOut
+	err = logsCmd.Run()
+	if err != nil {
+		return nil, err
+	}
+	details.Logs = logsOut.String()
+
+	return details, nil
+}
+
+func GetNodeDetails(nodeName string) (*ResourceDetails, error) {
+	details := &ResourceDetails{}
+	// Get describe
+	describeCmd := exec.Command("kubectl", "describe", "node", nodeName)
+	var describeOut bytes.Buffer
+	describeCmd.Stdout = &describeOut
+	err := describeCmd.Run()
+	if err != nil {
+		return nil, err
+	}
+	describeOutput := describeOut.String()
+
+	// Parse describe output
+	lines := strings.Split(describeOutput, "\n")
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if strings.HasPrefix(line, "Name:") {
+			details.Name = strings.TrimSpace(strings.TrimPrefix(line, "Name:"))
+		} else if strings.HasPrefix(line, "Namespace:") {
+			details.Namespace = strings.TrimSpace(strings.TrimPrefix(line, "Namespace:"))
+		} else if strings.HasPrefix(line, "Labels:") {
+			details.Labels = strings.TrimSpace(strings.TrimPrefix(line, "Labels:"))
+		} else if strings.HasPrefix(line, "Annotations:") {
+			details.Annotations = strings.TrimSpace(strings.TrimPrefix(line, "Annotations:"))
+		} else if strings.HasPrefix(line, "Status:") {
+			details.Status = strings.TrimSpace(strings.TrimPrefix(line, "Status:"))
+		} else if strings.HasPrefix(line, "IP:") {
+			details.IP = strings.TrimSpace(strings.TrimPrefix(line, "IP:"))
+		} else if strings.HasPrefix(line, "Controlled By:") {
+			details.ControlledBy = strings.TrimSpace(strings.TrimPrefix(line, "Controlled By:"))
+		} else if strings.HasPrefix(line, "Conditions:") {
+			details.Conditions = strings.TrimSpace(strings.TrimPrefix(line, "Conditions:"))
+		} else if strings.HasPrefix(line, "Volumes:") {
+			details.Volumes = strings.TrimSpace(strings.TrimPrefix(line, "Volumes:"))
+		} else if strings.HasPrefix(line, "QoS Class:") {
+			details.QoSClass = strings.TrimSpace(strings.TrimPrefix(line, "QoS Class:"))
+		} else if strings.HasPrefix(line, "Node-Selectors:") {
+			details.NodeSelectors = strings.TrimSpace(strings.TrimPrefix(line, "Node-Selectors:"))
+		} else if strings.HasPrefix(line, "Tolerations:") {
+			details.Tolerations = strings.TrimSpace(strings.TrimPrefix(line, "Tolerations:"))
+		} else if strings.HasPrefix(line, "Events:") {
+			details.Events = strings.TrimSpace(strings.TrimPrefix(line, "Events:"))
 		}
-		details.Logs = logsOut.String()
+	}
+
+	return details, nil
+}
+
+func GetDeploymentDetails(deploymentName string) (*ResourceDetails, error) {
+	details := &ResourceDetails{}
+	// Get describe
+	describeCmd := exec.Command("kubectl", "describe", "deployment", deploymentName)
+	var describeOut bytes.Buffer
+	describeCmd.Stdout = &describeOut
+	err := describeCmd.Run()
+	if err != nil {
+		return nil, err
+	}
+	describeOutput := describeOut.String()
+
+	// Parse describe output
+	lines := strings.Split(describeOutput, "\n")
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if strings.HasPrefix(line, "Name:") {
+			details.Name = strings.TrimSpace(strings.TrimPrefix(line, "Name:"))
+		} else if strings.HasPrefix(line, "Namespace:") {
+			details.Namespace = strings.TrimSpace(strings.TrimPrefix(line, "Namespace:"))
+		} else if strings.HasPrefix(line, "Labels:") {
+			details.Labels = strings.TrimSpace(strings.TrimPrefix(line, "Labels:"))
+		} else if strings.HasPrefix(line, "Annotations:") {
+			details.Annotations = strings.TrimSpace(strings.TrimPrefix(line, "Annotations:"))
+		} else if strings.HasPrefix(line, "Status:") {
+			details.Status = strings.TrimSpace(strings.TrimPrefix(line, "Status:"))
+		} else if strings.HasPrefix(line, "Controlled By:") {
+			details.ControlledBy = strings.TrimSpace(strings.TrimPrefix(line, "Controlled By:"))
+		} else if strings.HasPrefix(line, "Conditions:") {
+			details.Conditions = strings.TrimSpace(strings.TrimPrefix(line, "Conditions:"))
+		} else if strings.HasPrefix(line, "Volumes:") {
+			details.Volumes = strings.TrimSpace(strings.TrimPrefix(line, "Volumes:"))
+		} else if strings.HasPrefix(line, "QoS Class:") {
+			details.QoSClass = strings.TrimSpace(strings.TrimPrefix(line, "QoS Class:"))
+		} else if strings.HasPrefix(line, "Node-Selectors:") {
+			details.NodeSelectors = strings.TrimSpace(strings.TrimPrefix(line, "Node-Selectors:"))
+		} else if strings.HasPrefix(line, "Tolerations:") {
+			details.Tolerations = strings.TrimSpace(strings.TrimPrefix(line, "Tolerations:"))
+		} else if strings.HasPrefix(line, "Events:") {
+			details.Events = strings.TrimSpace(strings.TrimPrefix(line, "Events:"))
+		}
+	}
+
+	return details, nil
+}
+
+func GetServiceDetails(serviceName string) (*ResourceDetails, error) {
+	details := &ResourceDetails{}
+	// Get describe
+	describeCmd := exec.Command("kubectl", "describe", "service", serviceName)
+	var describeOut bytes.Buffer
+	describeCmd.Stdout = &describeOut
+	err := describeCmd.Run()
+	if err != nil {
+		return nil, err
+	}
+	describeOutput := describeOut.String()
+
+	// Parse describe output
+	lines := strings.Split(describeOutput, "\n")
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if strings.HasPrefix(line, "Name:") {
+			details.Name = strings.TrimSpace(strings.TrimPrefix(line, "Name:"))
+		} else if strings.HasPrefix(line, "Namespace:") {
+			details.Namespace = strings.TrimSpace(strings.TrimPrefix(line, "Namespace:"))
+		} else if strings.HasPrefix(line, "Labels:") {
+			details.Labels = strings.TrimSpace(strings.TrimPrefix(line, "Labels:"))
+		} else if strings.HasPrefix(line, "Annotations:") {
+			details.Annotations = strings.TrimSpace(strings.TrimPrefix(line, "Annotations:"))
+		} else if strings.HasPrefix(line, "Status:") {
+			details.Status = strings.TrimSpace(strings.TrimPrefix(line, "Status:"))
+		} else if strings.HasPrefix(line, "Controlled By:") {
+			details.ControlledBy = strings.TrimSpace(strings.TrimPrefix(line, "Controlled By:"))
+		} else if strings.HasPrefix(line, "Conditions:") {
+			details.Conditions = strings.TrimSpace(strings.TrimPrefix(line, "Conditions:"))
+		} else if strings.HasPrefix(line, "Volumes:") {
+			details.Volumes = strings.TrimSpace(strings.TrimPrefix(line, "Volumes:"))
+		} else if strings.HasPrefix(line, "QoS Class:") {
+			details.QoSClass = strings.TrimSpace(strings.TrimPrefix(line, "QoS Class:"))
+		} else if strings.HasPrefix(line, "Node-Selectors:") {
+			details.NodeSelectors = strings.TrimSpace(strings.TrimPrefix(line, "Node-Selectors:"))
+		} else if strings.HasPrefix(line, "Tolerations:") {
+			details.Tolerations = strings.TrimSpace(strings.TrimPrefix(line, "Tolerations:"))
+		} else if strings.HasPrefix(line, "Events:") {
+			details.Events = strings.TrimSpace(strings.TrimPrefix(line, "Events:"))
+		}
+	}
+
+	return details, nil
+}
+
+func GetNamespaceDetails(namespaceName string) (*ResourceDetails, error) {
+	details := &ResourceDetails{}
+	// Get describe
+	describeCmd := exec.Command("kubectl", "describe", "namespace", namespaceName)
+	var describeOut bytes.Buffer
+	describeCmd.Stdout = &describeOut
+	err := describeCmd.Run()
+	if err != nil {
+		return nil, err
+	}
+	describeOutput := describeOut.String()
+
+	// Parse describe output
+	lines := strings.Split(describeOutput, "\n")
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if strings.HasPrefix(line, "Name:") {
+			details.Name = strings.TrimSpace(strings.TrimPrefix(line, "Name:"))
+		} else if strings.HasPrefix(line, "Labels:") {
+			details.Labels = strings.TrimSpace(strings.TrimPrefix(line, "Labels:"))
+		} else if strings.HasPrefix(line, "Annotations:") {
+			details.Annotations = strings.TrimSpace(strings.TrimPrefix(line, "Annotations:"))
+		} else if strings.HasPrefix(line, "Status:") {
+			details.Status = strings.TrimSpace(strings.TrimPrefix(line, "Status:"))
+		} else if strings.HasPrefix(line, "Controlled By:") {
+			details.ControlledBy = strings.TrimSpace(strings.TrimPrefix(line, "Controlled By:"))
+		} else if strings.HasPrefix(line, "Conditions:") {
+			details.Conditions = strings.TrimSpace(strings.TrimPrefix(line, "Conditions:"))
+		} else if strings.HasPrefix(line, "Volumes:") {
+			details.Volumes = strings.TrimSpace(strings.TrimPrefix(line, "Volumes:"))
+		} else if strings.HasPrefix(line, "QoS Class:") {
+			details.QoSClass = strings.TrimSpace(strings.TrimPrefix(line, "QoS Class:"))
+		} else if strings.HasPrefix(line, "Node-Selectors:") {
+			details.NodeSelectors = strings.TrimSpace(strings.TrimPrefix(line, "Node-Selectors:"))
+		} else if strings.HasPrefix(line, "Tolerations:") {
+			details.Tolerations = strings.TrimSpace(strings.TrimPrefix(line, "Tolerations:"))
+		} else if strings.HasPrefix(line, "Events:") {
+			details.Events = strings.TrimSpace(strings.TrimPrefix(line, "Events:"))
+		}
+	}
+
+	return details, nil
+}
+
+func GetConfigMapDetails(configMapName string) (*ResourceDetails, error) {
+	details := &ResourceDetails{}
+	// Get describe
+	describeCmd := exec.Command("kubectl", "describe", "configmap", configMapName)
+	var describeOut bytes.Buffer
+	describeCmd.Stdout = &describeOut
+	err := describeCmd.Run()
+	if err != nil {
+		return nil, err
+	}
+	describeOutput := describeOut.String()
+
+	// Parse describe output
+	lines := strings.Split(describeOutput, "\n")
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if strings.HasPrefix(line, "Name:") {
+			details.Name = strings.TrimSpace(strings.TrimPrefix(line, "Name:"))
+		} else if strings.HasPrefix(line, "Namespace:") {
+			details.Namespace = strings.TrimSpace(strings.TrimPrefix(line, "Namespace:"))
+		} else if strings.HasPrefix(line, "Labels:") {
+			details.Labels = strings.TrimSpace(strings.TrimPrefix(line, "Labels:"))
+		} else if strings.HasPrefix(line, "Annotations:") {
+			details.Annotations = strings.TrimSpace(strings.TrimPrefix(line, "Annotations:"))
+		} else if strings.HasPrefix(line, "Status:") {
+			details.Status = strings.TrimSpace(strings.TrimPrefix(line, "Status:"))
+		} else if strings.HasPrefix(line, "Controlled By:") {
+			details.ControlledBy = strings.TrimSpace(strings.TrimPrefix(line, "Controlled By:"))
+		} else if strings.HasPrefix(line, "Conditions:") {
+			details.Conditions = strings.TrimSpace(strings.TrimPrefix(line, "Conditions:"))
+		} else if strings.HasPrefix(line, "Volumes:") {
+			details.Volumes = strings.TrimSpace(strings.TrimPrefix(line, "Volumes:"))
+		} else if strings.HasPrefix(line, "QoS Class:") {
+			details.QoSClass = strings.TrimSpace(strings.TrimPrefix(line, "QoS Class:"))
+		} else if strings.HasPrefix(line, "Node-Selectors:") {
+			details.NodeSelectors = strings.TrimSpace(strings.TrimPrefix(line, "Node-Selectors:"))
+		} else if strings.HasPrefix(line, "Tolerations:") {
+			details.Tolerations = strings.TrimSpace(strings.TrimPrefix(line, "Tolerations:"))
+		} else if strings.HasPrefix(line, "Events:") {
+			details.Events = strings.TrimSpace(strings.TrimPrefix(line, "Events:"))
+		}
+	}
+
+	return details, nil
+}
+
+func GetPVCDetails(pvcName string) (*ResourceDetails, error) {
+	details := &ResourceDetails{}
+	// Get describe
+	describeCmd := exec.Command("kubectl", "describe", "pvc", pvcName)
+	var describeOut bytes.Buffer
+	describeCmd.Stdout = &describeOut
+	err := describeCmd.Run()
+	if err != nil {
+		return nil, err
+	}
+	describeOutput := describeOut.String()
+
+	// Parse describe output
+	lines := strings.Split(describeOutput, "\n")
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if strings.HasPrefix(line, "Name:") {
+			details.Name = strings.TrimSpace(strings.TrimPrefix(line, "Name:"))
+		} else if strings.HasPrefix(line, "Namespace:") {
+			details.Namespace = strings.TrimSpace(strings.TrimPrefix(line, "Namespace:"))
+		} else if strings.HasPrefix(line, "Labels:") {
+			details.Labels = strings.TrimSpace(strings.TrimPrefix(line, "Labels:"))
+		} else if strings.HasPrefix(line, "Annotations:") {
+			details.Annotations = strings.TrimSpace(strings.TrimPrefix(line, "Annotations:"))
+		} else if strings.HasPrefix(line, "Status:") {
+			details.Status = strings.TrimSpace(strings.TrimPrefix(line, "Status:"))
+		} else if strings.HasPrefix(line, "Controlled By:") {
+			details.ControlledBy = strings.TrimSpace(strings.TrimPrefix(line, "Controlled By:"))
+		} else if strings.HasPrefix(line, "Conditions:") {
+			details.Conditions = strings.TrimSpace(strings.TrimPrefix(line, "Conditions:"))
+		} else if strings.HasPrefix(line, "Volumes:") {
+			details.Volumes = strings.TrimSpace(strings.TrimPrefix(line, "Volumes:"))
+		} else if strings.HasPrefix(line, "QoS Class:") {
+			details.QoSClass = strings.TrimSpace(strings.TrimPrefix(line, "QoS Class:"))
+		} else if strings.HasPrefix(line, "Node-Selectors:") {
+			details.NodeSelectors = strings.TrimSpace(strings.TrimPrefix(line, "Node-Selectors:"))
+		} else if strings.HasPrefix(line, "Tolerations:") {
+			details.Tolerations = strings.TrimSpace(strings.TrimPrefix(line, "Tolerations:"))
+		} else if strings.HasPrefix(line, "Events:") {
+			details.Events = strings.TrimSpace(strings.TrimPrefix(line, "Events:"))
+		}
+	}
+
+	return details, nil
+}
+
+type EndpointDetails struct {
+	Name        string `json:"name"`
+	Namespace   string `json:"namespace"`
+	Labels      string `json:"labels"`
+	Annotations string `json:"annotations"`
+	IP          string `json:"ip"`
+	Port        string `json:"port"`
+}
+
+func GetEndpointDetails(endpointName string) (*EndpointDetails, error) {
+	details := &EndpointDetails{}
+	// Get describe
+	describeCmd := exec.Command("kubectl", "describe", "endpoints", endpointName)
+	var describeOut bytes.Buffer
+	describeCmd.Stdout = &describeOut
+	err := describeCmd.Run()
+	if err != nil {
+		return nil, err
+	}
+	describeOutput := describeOut.String()
+
+	// Parse describe output
+	lines := strings.Split(describeOutput, "\n")
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if strings.HasPrefix(line, "Name:") {
+			details.Name = strings.TrimSpace(strings.TrimPrefix(line, "Name:"))
+		} else if strings.HasPrefix(line, "Namespace:") {
+			details.Namespace = strings.TrimSpace(strings.TrimPrefix(line, "Namespace:"))
+		} else if strings.HasPrefix(line, "Labels:") {
+			details.Labels = strings.TrimSpace(strings.TrimPrefix(line, "Labels:"))
+		} else if strings.HasPrefix(line, "Annotations:") {
+			details.Annotations = strings.TrimSpace(strings.TrimPrefix(line, "Annotations:"))
+		} else if strings.HasPrefix(line, "Addresses:") {
+			details.IP = strings.TrimSpace(strings.TrimPrefix(line, "Addresses:"))
+		} else if strings.HasPrefix(line, "Ports:") {
+			// Skip the header line
+			continue
+		} else if strings.HasPrefix(line, "https") {
+			details.Port = strings.TrimSpace(strings.Fields(line)[1])
+		}
+	}
+
+	return details, nil
+}
+
+func GetIngressDetails(ingressName string) (*ResourceDetails, error) {
+	details := &ResourceDetails{}
+	// Get describe
+	describeCmd := exec.Command("kubectl", "describe", "ingress", ingressName)
+	var describeOut bytes.Buffer
+	describeCmd.Stdout = &describeOut
+	err := describeCmd.Run()
+	if err != nil {
+		return nil, err
+	}
+	describeOutput := describeOut.String()
+
+	// Parse describe output
+	lines := strings.Split(describeOutput, "\n")
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if strings.HasPrefix(line, "Name:") {
+			details.Name = strings.TrimSpace(strings.TrimPrefix(line, "Name:"))
+		} else if strings.HasPrefix(line, "Namespace:") {
+			details.Namespace = strings.TrimSpace(strings.TrimPrefix(line, "Namespace:"))
+		} else if strings.HasPrefix(line, "Labels:") {
+			details.Labels = strings.TrimSpace(strings.TrimPrefix(line, "Labels:"))
+		} else if strings.HasPrefix(line, "Annotations:") {
+			details.Annotations = strings.TrimSpace(strings.TrimPrefix(line, "Annotations:"))
+		} else if strings.HasPrefix(line, "Status:") {
+			details.Status = strings.TrimSpace(strings.TrimPrefix(line, "Status:"))
+		} else if strings.HasPrefix(line, "Controlled By:") {
+			details.ControlledBy = strings.TrimSpace(strings.TrimPrefix(line, "Controlled By:"))
+		} else if strings.HasPrefix(line, "Conditions:") {
+			details.Conditions = strings.TrimSpace(strings.TrimPrefix(line, "Conditions:"))
+		} else if strings.HasPrefix(line, "Volumes:") {
+			details.Volumes = strings.TrimSpace(strings.TrimPrefix(line, "Volumes:"))
+		} else if strings.HasPrefix(line, "QoS Class:") {
+			details.QoSClass = strings.TrimSpace(strings.TrimPrefix(line, "QoS Class:"))
+		} else if strings.HasPrefix(line, "Node-Selectors:") {
+			details.NodeSelectors = strings.TrimSpace(strings.TrimPrefix(line, "Node-Selectors:"))
+		} else if strings.HasPrefix(line, "Tolerations:") {
+			details.Tolerations = strings.TrimSpace(strings.TrimPrefix(line, "Tolerations:"))
+		} else if strings.HasPrefix(line, "Events:") {
+			details.Events = strings.TrimSpace(strings.TrimPrefix(line, "Events:"))
+		}
 	}
 
 	return details, nil

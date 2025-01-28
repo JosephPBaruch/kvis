@@ -427,8 +427,8 @@ func GetConfigMapDetails(configMapName string) (*types.ConfigMapDetails, error) 
 	return details, nil
 }
 
-func GetPVCDetails(pvcName string) (*types.ResourceDetails, error) {
-	details := &types.ResourceDetails{}
+func GetPVCDetails(pvcName string) (*types.PVCDetails, error) {
+	details := &types.PVCDetails{}
 	// Get describe
 	describeCmd := exec.Command("kubectl", "describe", "pvc", pvcName)
 	var describeOut bytes.Buffer
@@ -447,24 +447,26 @@ func GetPVCDetails(pvcName string) (*types.ResourceDetails, error) {
 			details.Name = strings.TrimSpace(strings.TrimPrefix(line, "Name:"))
 		} else if strings.HasPrefix(line, "Namespace:") {
 			details.Namespace = strings.TrimSpace(strings.TrimPrefix(line, "Namespace:"))
+		} else if strings.HasPrefix(line, "StorageClass:") {
+			details.StorageClass = strings.TrimSpace(strings.TrimPrefix(line, "StorageClass:"))
+		} else if strings.HasPrefix(line, "Status:") {
+			details.Status = strings.TrimSpace(strings.TrimPrefix(line, "Status:"))
+		} else if strings.HasPrefix(line, "Volume:") {
+			details.Volume = strings.TrimSpace(strings.TrimPrefix(line, "Volume:"))
 		} else if strings.HasPrefix(line, "Labels:") {
 			details.Labels = strings.TrimSpace(strings.TrimPrefix(line, "Labels:"))
 		} else if strings.HasPrefix(line, "Annotations:") {
 			details.Annotations = strings.TrimSpace(strings.TrimPrefix(line, "Annotations:"))
-		} else if strings.HasPrefix(line, "Status:") {
-			details.Status = strings.TrimSpace(strings.TrimPrefix(line, "Status:"))
-		} else if strings.HasPrefix(line, "Controlled By:") {
-			details.ControlledBy = strings.TrimSpace(strings.TrimPrefix(line, "Controlled By:"))
-		} else if strings.HasPrefix(line, "Conditions:") {
-			details.Conditions = strings.TrimSpace(strings.TrimPrefix(line, "Conditions:"))
-		} else if strings.HasPrefix(line, "Volumes:") {
-			details.Volumes = strings.TrimSpace(strings.TrimPrefix(line, "Volumes:"))
-		} else if strings.HasPrefix(line, "QoS Class:") {
-			details.QoSClass = strings.TrimSpace(strings.TrimPrefix(line, "QoS Class:"))
-		} else if strings.HasPrefix(line, "Node-Selectors:") {
-			details.NodeSelectors = strings.TrimSpace(strings.TrimPrefix(line, "Node-Selectors:"))
-		} else if strings.HasPrefix(line, "Tolerations:") {
-			details.Tolerations = strings.TrimSpace(strings.TrimPrefix(line, "Tolerations:"))
+		} else if strings.HasPrefix(line, "Finalizers:") {
+			details.Finalizers = strings.TrimSpace(strings.TrimPrefix(line, "Finalizers:"))
+		} else if strings.HasPrefix(line, "Capacity:") {
+			details.Capacity = strings.TrimSpace(strings.TrimPrefix(line, "Capacity:"))
+		} else if strings.HasPrefix(line, "Access Modes:") {
+			details.AccessModes = strings.TrimSpace(strings.TrimPrefix(line, "Access Modes:"))
+		} else if strings.HasPrefix(line, "VolumeMode:") {
+			details.VolumeMode = strings.TrimSpace(strings.TrimPrefix(line, "VolumeMode:"))
+		} else if strings.HasPrefix(line, "Used By:") {
+			details.UsedBy = strings.TrimSpace(strings.TrimPrefix(line, "Used By:"))
 		} else if strings.HasPrefix(line, "Events:") {
 			details.Events = strings.TrimSpace(strings.TrimPrefix(line, "Events:"))
 		}

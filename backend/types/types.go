@@ -163,3 +163,19 @@ type NamespaceDetails struct {
 	ResourceQuota string `json:"resourceQuota"`
 	LimitRange    string `json:"limitRange"`
 }
+
+type PVCDetails struct {
+	Name         string `json:"name"`
+	Namespace    string `json:"namespace"`
+	StorageClass string `json:"storageClass"`
+	Status       string `json:"status"`
+	Volume       string `json:"volume"`
+	Labels       string `json:"labels"`
+	Annotations  string `json:"annotations"`
+	Finalizers   string `json:"finalizers"`
+	Capacity     string `json:"capacity"`
+	AccessModes  string `json:"accessModes"`
+	VolumeMode   string `json:"volumeMode"`
+	UsedBy       string `json:"usedBy"`
+	Events       string `json:"events"`
+}

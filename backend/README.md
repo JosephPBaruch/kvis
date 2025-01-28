@@ -32,4 +32,4 @@ These will display information from kubectl describe, logs, events
     /ingress/{name_id}
         Complete
     /endpoints/{name_id}
-        / Complete 
+        Complete 

@@ -3,6 +3,7 @@ package control
 import (
 	"backend/types"
 	"bytes"
+	"encoding/base64"
 	"encoding/json"
 	"os/exec"
 	"strings"
@@ -384,8 +385,8 @@ func GetNamespaceDetails(namespaceName string) (*types.ResourceDetails, error) {
 	return details, nil
 }
 
-func GetConfigMapDetails(configMapName string) (*types.ResourceDetails, error) {
-	details := &types.ResourceDetails{}
+func GetConfigMapDetails(configMapName string) (*types.ConfigMapDetails, error) {
+	details := &types.ConfigMapDetails{}
 	// Get describe
 	describeCmd := exec.Command("kubectl", "describe", "configmap", configMapName)
 	var describeOut bytes.Buffer
@@ -398,6 +399,7 @@ func GetConfigMapDetails(configMapName string) (*types.ResourceDetails, error) {
 
 	// Parse describe output
 	lines := strings.Split(describeOutput, "\n")
+	var caCrtData []string
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
 		if strings.HasPrefix(line, "Name:") {
@@ -408,23 +410,28 @@ func GetConfigMapDetails(configMapName string) (*types.ResourceDetails, error) {
 			details.Labels = strings.TrimSpace(strings.TrimPrefix(line, "Labels:"))
 		} else if strings.HasPrefix(line, "Annotations:") {
 			details.Annotations = strings.TrimSpace(strings.TrimPrefix(line, "Annotations:"))
-		} else if strings.HasPrefix(line, "Status:") {
-			details.Status = strings.TrimSpace(strings.TrimPrefix(line, "Status:"))
-		} else if strings.HasPrefix(line, "Controlled By:") {
-			details.ControlledBy = strings.TrimSpace(strings.TrimPrefix(line, "Controlled By:"))
-		} else if strings.HasPrefix(line, "Conditions:") {
-			details.Conditions = strings.TrimSpace(strings.TrimPrefix(line, "Conditions:"))
-		} else if strings.HasPrefix(line, "Volumes:") {
-			details.Volumes = strings.TrimSpace(strings.TrimPrefix(line, "Volumes:"))
-		} else if strings.HasPrefix(line, "QoS Class:") {
-			details.QoSClass = strings.TrimSpace(strings.TrimPrefix(line, "QoS Class:"))
-		} else if strings.HasPrefix(line, "Node-Selectors:") {
-			details.NodeSelectors = strings.TrimSpace(strings.TrimPrefix(line, "Node-Selectors:"))
-		} else if strings.HasPrefix(line, "Tolerations:") {
-			details.Tolerations = strings.TrimSpace(strings.TrimPrefix(line, "Tolerations:"))
+		} else if strings.HasPrefix(line, "Data") {
+			// Skip the header line
+			continue
+		} else if strings.HasPrefix(line, "ca.crt:") {
+			// Start collecting ca.crt data
+			caCrtData = append(caCrtData, strings.TrimSpace(strings.TrimPrefix(line, "ca.crt:")))
+		} else if len(caCrtData) > 0 {
+			// Collect the rest of the ca.crt data
+			caCrtData = append(caCrtData, line)
+		} else if strings.HasPrefix(line, "BinaryData") {
+			// Skip the header line
+			continue
 		} else if strings.HasPrefix(line, "Events:") {
 			details.Events = strings.TrimSpace(strings.TrimPrefix(line, "Events:"))
 		}
+	}
+
+	// Encode the collected ca.crt data
+	if len(caCrtData) > 0 {
+		caCrt := strings.Join(caCrtData, "\n")
+		encodedCACrt := base64.StdEncoding.EncodeToString([]byte(caCrt))
+		details.CACert = encodedCACrt
 	}
 
 	return details, nil

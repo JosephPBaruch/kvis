@@ -145,3 +145,12 @@ type ConditionsDetails struct {
 	Available   string `json:"available"`
 	Progressing string `json:"progressing"`
 }
+
+type ConfigMapDetails struct {
+	Name        string `json:"name"`
+	Namespace   string `json:"namespace"`
+	Labels      string `json:"labels"`
+	Annotations string `json:"annotations"`
+	CACert      string `json:"caCert"`
+	Events      string `json:"events"`
+}

@@ -341,8 +341,8 @@ func GetServiceDetails(serviceName string) (*types.ServiceDetails, error) {
 	return details, nil
 }
 
-func GetNamespaceDetails(namespaceName string) (*types.ResourceDetails, error) {
-	details := &types.ResourceDetails{}
+func GetNamespaceDetails(namespaceName string) (*types.NamespaceDetails, error) {
+	details := &types.NamespaceDetails{}
 	// Get describe
 	describeCmd := exec.Command("kubectl", "describe", "namespace", namespaceName)
 	var describeOut bytes.Buffer
@@ -365,20 +365,10 @@ func GetNamespaceDetails(namespaceName string) (*types.ResourceDetails, error) {
 			details.Annotations = strings.TrimSpace(strings.TrimPrefix(line, "Annotations:"))
 		} else if strings.HasPrefix(line, "Status:") {
 			details.Status = strings.TrimSpace(strings.TrimPrefix(line, "Status:"))
-		} else if strings.HasPrefix(line, "Controlled By:") {
-			details.ControlledBy = strings.TrimSpace(strings.TrimPrefix(line, "Controlled By:"))
-		} else if strings.HasPrefix(line, "Conditions:") {
-			details.Conditions = strings.TrimSpace(strings.TrimPrefix(line, "Conditions:"))
-		} else if strings.HasPrefix(line, "Volumes:") {
-			details.Volumes = strings.TrimSpace(strings.TrimPrefix(line, "Volumes:"))
-		} else if strings.HasPrefix(line, "QoS Class:") {
-			details.QoSClass = strings.TrimSpace(strings.TrimPrefix(line, "QoS Class:"))
-		} else if strings.HasPrefix(line, "Node-Selectors:") {
-			details.NodeSelectors = strings.TrimSpace(strings.TrimPrefix(line, "Node-Selectors:"))
-		} else if strings.HasPrefix(line, "Tolerations:") {
-			details.Tolerations = strings.TrimSpace(strings.TrimPrefix(line, "Tolerations:"))
-		} else if strings.HasPrefix(line, "Events:") {
-			details.Events = strings.TrimSpace(strings.TrimPrefix(line, "Events:"))
+		} else if strings.HasPrefix(line, "No resource quota.") {
+			details.ResourceQuota = "No resource quota."
+		} else if strings.HasPrefix(line, "No LimitRange resource.") {
+			details.LimitRange = "No LimitRange resource."
 		}
 	}
 

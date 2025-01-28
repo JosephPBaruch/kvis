@@ -154,3 +154,12 @@ type ConfigMapDetails struct {
 	CACert      string `json:"caCert"`
 	Events      string `json:"events"`
 }
+
+type NamespaceDetails struct {
+	Name          string `json:"name"`
+	Labels        string `json:"labels"`
+	Annotations   string `json:"annotations"`
+	Status        string `json:"status"`
+	ResourceQuota string `json:"resourceQuota"`
+	LimitRange    string `json:"limitRange"`
+}

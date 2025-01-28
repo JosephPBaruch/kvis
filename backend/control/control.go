@@ -210,8 +210,8 @@ func GetNodeDetails(nodeName string) (*types.NodeDetails, error) {
 	return details, nil
 }
 
-func GetDeploymentDetails(deploymentName string) (*types.ResourceDetails, error) {
-	details := &types.ResourceDetails{}
+func GetDeploymentDetails(deploymentName string) (*types.DeploymentDetails, error) {
+	details := &types.DeploymentDetails{}
 	// Get describe
 	describeCmd := exec.Command("kubectl", "describe", "deployment", deploymentName)
 	var describeOut bytes.Buffer
@@ -230,24 +230,56 @@ func GetDeploymentDetails(deploymentName string) (*types.ResourceDetails, error)
 			details.Name = strings.TrimSpace(strings.TrimPrefix(line, "Name:"))
 		} else if strings.HasPrefix(line, "Namespace:") {
 			details.Namespace = strings.TrimSpace(strings.TrimPrefix(line, "Namespace:"))
+		} else if strings.HasPrefix(line, "CreationTimestamp:") {
+			details.CreationTimestamp = strings.TrimSpace(strings.TrimPrefix(line, "CreationTimestamp:"))
 		} else if strings.HasPrefix(line, "Labels:") {
 			details.Labels = strings.TrimSpace(strings.TrimPrefix(line, "Labels:"))
 		} else if strings.HasPrefix(line, "Annotations:") {
 			details.Annotations = strings.TrimSpace(strings.TrimPrefix(line, "Annotations:"))
-		} else if strings.HasPrefix(line, "Status:") {
-			details.Status = strings.TrimSpace(strings.TrimPrefix(line, "Status:"))
-		} else if strings.HasPrefix(line, "Controlled By:") {
-			details.ControlledBy = strings.TrimSpace(strings.TrimPrefix(line, "Controlled By:"))
-		} else if strings.HasPrefix(line, "Conditions:") {
-			details.Conditions = strings.TrimSpace(strings.TrimPrefix(line, "Conditions:"))
+		} else if strings.HasPrefix(line, "Selector:") {
+			details.Selector = strings.TrimSpace(strings.TrimPrefix(line, "Selector:"))
+		} else if strings.HasPrefix(line, "Replicas:") {
+			details.Replicas = strings.TrimSpace(strings.TrimPrefix(line, "Replicas:"))
+		} else if strings.HasPrefix(line, "StrategyType:") {
+			details.StrategyType = strings.TrimSpace(strings.TrimPrefix(line, "StrategyType:"))
+		} else if strings.HasPrefix(line, "MinReadySeconds:") {
+			details.MinReadySeconds = strings.TrimSpace(strings.TrimPrefix(line, "MinReadySeconds:"))
+		} else if strings.HasPrefix(line, "RollingUpdateStrategy:") {
+			details.RollingUpdateStrategy = strings.TrimSpace(strings.TrimPrefix(line, "RollingUpdateStrategy:"))
+		} else if strings.HasPrefix(line, "Pod Template:") {
+			// Skip the header line
+			continue
+		} else if strings.HasPrefix(line, "Labels:") {
+			details.PodTemplate.Labels = strings.TrimSpace(strings.TrimPrefix(line, "Labels:"))
+		} else if strings.HasPrefix(line, "Containers:") {
+			// Skip the header line
+			continue
+		} else if strings.HasPrefix(line, "Image:") {
+			details.PodTemplate.Containers.Image = strings.TrimSpace(strings.TrimPrefix(line, "Image:"))
+		} else if strings.HasPrefix(line, "Port:") {
+			details.PodTemplate.Containers.Port = strings.TrimSpace(strings.TrimPrefix(line, "Port:"))
+		} else if strings.HasPrefix(line, "Host Port:") {
+			details.PodTemplate.Containers.HostPort = strings.TrimSpace(strings.TrimPrefix(line, "Host Port:"))
+		} else if strings.HasPrefix(line, "Environment:") {
+			details.PodTemplate.Containers.Environment = strings.TrimSpace(strings.TrimPrefix(line, "Environment:"))
+		} else if strings.HasPrefix(line, "Mounts:") {
+			details.PodTemplate.Containers.Mounts = strings.TrimSpace(strings.TrimPrefix(line, "Mounts:"))
 		} else if strings.HasPrefix(line, "Volumes:") {
-			details.Volumes = strings.TrimSpace(strings.TrimPrefix(line, "Volumes:"))
-		} else if strings.HasPrefix(line, "QoS Class:") {
-			details.QoSClass = strings.TrimSpace(strings.TrimPrefix(line, "QoS Class:"))
-		} else if strings.HasPrefix(line, "Node-Selectors:") {
-			details.NodeSelectors = strings.TrimSpace(strings.TrimPrefix(line, "Node-Selectors:"))
-		} else if strings.HasPrefix(line, "Tolerations:") {
-			details.Tolerations = strings.TrimSpace(strings.TrimPrefix(line, "Tolerations:"))
+			details.PodTemplate.Volumes = strings.TrimSpace(strings.TrimPrefix(line, "Volumes:"))
+		} else if strings.HasPrefix(line, "Conditions:") {
+			// Skip the header line
+			continue
+		} else if strings.HasPrefix(line, "Type") {
+			// Skip the header line
+			continue
+		} else if strings.HasPrefix(line, "Available") {
+			details.Conditions.Available = strings.TrimSpace(strings.TrimPrefix(line, "Available"))
+		} else if strings.HasPrefix(line, "Progressing") {
+			details.Conditions.Progressing = strings.TrimSpace(strings.TrimPrefix(line, "Progressing"))
+		} else if strings.HasPrefix(line, "OldReplicaSets:") {
+			details.OldReplicaSets = strings.TrimSpace(strings.TrimPrefix(line, "OldReplicaSets:"))
+		} else if strings.HasPrefix(line, "NewReplicaSet:") {
+			details.NewReplicaSet = strings.TrimSpace(strings.TrimPrefix(line, "NewReplicaSet:"))
 		} else if strings.HasPrefix(line, "Events:") {
 			details.Events = strings.TrimSpace(strings.TrimPrefix(line, "Events:"))
 		}

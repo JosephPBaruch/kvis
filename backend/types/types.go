@@ -108,3 +108,40 @@ type IngressRule struct {
 	Path    string `json:"path"`
 	Backend string `json:"backend"`
 }
+
+type DeploymentDetails struct {
+	Name                  string             `json:"name"`
+	Namespace             string             `json:"namespace"`
+	CreationTimestamp     string             `json:"creationTimestamp"`
+	Labels                string             `json:"labels"`
+	Annotations           string             `json:"annotations"`
+	Selector              string             `json:"selector"`
+	Replicas              string             `json:"replicas"`
+	StrategyType          string             `json:"strategyType"`
+	MinReadySeconds       string             `json:"minReadySeconds"`
+	RollingUpdateStrategy string             `json:"rollingUpdateStrategy"`
+	PodTemplate           PodTemplateDetails `json:"podTemplate"`
+	Conditions            ConditionsDetails  `json:"conditions"`
+	OldReplicaSets        string             `json:"oldReplicaSets"`
+	NewReplicaSet         string             `json:"newReplicaSet"`
+	Events                string             `json:"events"`
+}
+
+type PodTemplateDetails struct {
+	Labels     string           `json:"labels"`
+	Containers ContainerDetails `json:"containers"`
+	Volumes    string           `json:"volumes"`
+}
+
+type ContainerDetails struct {
+	Image       string `json:"image"`
+	Port        string `json:"port"`
+	HostPort    string `json:"hostPort"`
+	Environment string `json:"environment"`
+	Mounts      string `json:"mounts"`
+}
+
+type ConditionsDetails struct {
+	Available   string `json:"available"`
+	Progressing string `json:"progressing"`
+}

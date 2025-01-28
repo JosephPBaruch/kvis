@@ -5,10 +5,24 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	routes.RegisterRoutes()
-	fmt.Println("Server is running on port 8082...")
-	log.Fatal(http.ListenAndServe(":8082", nil))
+	err := godotenv.Load()
+	if err != nil {
+
+		log.Fatal("Error loading .env file")
+	}
+
+	port := os.Getenv("BACKEND_PORT")
+	if port == "" {
+		port = "8082" // Default port if not set
+	}
+
+	routes.Routes()
+	fmt.Printf("Server is running on port %s...\n", port)
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }

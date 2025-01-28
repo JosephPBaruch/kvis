@@ -17,3 +17,6 @@ spec:
         image: k3d-local-registry:5001/kvis-backend:latest
         ports:
         - containerPort: 8082
+        env:
+        - name: BACKEND_PORT
+          value: "8082"

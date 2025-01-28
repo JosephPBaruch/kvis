@@ -12,7 +12,7 @@ start_backend() {
 start_frontend() {
     echo "Running the frontend..."
     cd client
-    nohup ./run_client.sh > frontend.log 2>&1 &
+    nohup ./pipeline.sh > frontend.log 2>&1 &
     cd ..
 }
 

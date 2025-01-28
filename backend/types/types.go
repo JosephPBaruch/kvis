@@ -73,3 +73,21 @@ type NodeDetails struct {
 	PodCIDRs                string `json:"podCIDRs"`
 	ProviderID              string `json:"providerID"`
 }
+
+type ServiceDetails struct {
+	Name            string `json:"name"`
+	Namespace       string `json:"namespace"`
+	Labels          string `json:"labels"`
+	Annotations     string `json:"annotations"`
+	Selector        string `json:"selector"`
+	Type            string `json:"type"`
+	IPFamilyPolicy  string `json:"ipFamilyPolicy"`
+	IPFamilies      string `json:"ipFamilies"`
+	IP              string `json:"ip"`
+	IPs             string `json:"ips"`
+	Port            string `json:"port"`
+	TargetPort      string `json:"targetPort"`
+	Endpoints       string `json:"endpoints"`
+	SessionAffinity string `json:"sessionAffinity"`
+	Events          string `json:"events"`
+}

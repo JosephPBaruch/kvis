@@ -256,8 +256,8 @@ func GetDeploymentDetails(deploymentName string) (*types.ResourceDetails, error)
 	return details, nil
 }
 
-func GetServiceDetails(serviceName string) (*types.ResourceDetails, error) {
-	details := &types.ResourceDetails{}
+func GetServiceDetails(serviceName string) (*types.ServiceDetails, error) {
+	details := &types.ServiceDetails{}
 	// Get describe
 	describeCmd := exec.Command("kubectl", "describe", "service", serviceName)
 	var describeOut bytes.Buffer
@@ -280,20 +280,26 @@ func GetServiceDetails(serviceName string) (*types.ResourceDetails, error) {
 			details.Labels = strings.TrimSpace(strings.TrimPrefix(line, "Labels:"))
 		} else if strings.HasPrefix(line, "Annotations:") {
 			details.Annotations = strings.TrimSpace(strings.TrimPrefix(line, "Annotations:"))
-		} else if strings.HasPrefix(line, "Status:") {
-			details.Status = strings.TrimSpace(strings.TrimPrefix(line, "Status:"))
-		} else if strings.HasPrefix(line, "Controlled By:") {
-			details.ControlledBy = strings.TrimSpace(strings.TrimPrefix(line, "Controlled By:"))
-		} else if strings.HasPrefix(line, "Conditions:") {
-			details.Conditions = strings.TrimSpace(strings.TrimPrefix(line, "Conditions:"))
-		} else if strings.HasPrefix(line, "Volumes:") {
-			details.Volumes = strings.TrimSpace(strings.TrimPrefix(line, "Volumes:"))
-		} else if strings.HasPrefix(line, "QoS Class:") {
-			details.QoSClass = strings.TrimSpace(strings.TrimPrefix(line, "QoS Class:"))
-		} else if strings.HasPrefix(line, "Node-Selectors:") {
-			details.NodeSelectors = strings.TrimSpace(strings.TrimPrefix(line, "Node-Selectors:"))
-		} else if strings.HasPrefix(line, "Tolerations:") {
-			details.Tolerations = strings.TrimSpace(strings.TrimPrefix(line, "Tolerations:"))
+		} else if strings.HasPrefix(line, "Selector:") {
+			details.Selector = strings.TrimSpace(strings.TrimPrefix(line, "Selector:"))
+		} else if strings.HasPrefix(line, "Type:") {
+			details.Type = strings.TrimSpace(strings.TrimPrefix(line, "Type:"))
+		} else if strings.HasPrefix(line, "IP Family Policy:") {
+			details.IPFamilyPolicy = strings.TrimSpace(strings.TrimPrefix(line, "IP Family Policy:"))
+		} else if strings.HasPrefix(line, "IP Families:") {
+			details.IPFamilies = strings.TrimSpace(strings.TrimPrefix(line, "IP Families:"))
+		} else if strings.HasPrefix(line, "IP:") {
+			details.IP = strings.TrimSpace(strings.TrimPrefix(line, "IP:"))
+		} else if strings.HasPrefix(line, "IPs:") {
+			details.IPs = strings.TrimSpace(strings.TrimPrefix(line, "IPs:"))
+		} else if strings.HasPrefix(line, "Port:") {
+			details.Port = strings.TrimSpace(strings.TrimPrefix(line, "Port:"))
+		} else if strings.HasPrefix(line, "TargetPort:") {
+			details.TargetPort = strings.TrimSpace(strings.TrimPrefix(line, "TargetPort:"))
+		} else if strings.HasPrefix(line, "Endpoints:") {
+			details.Endpoints = strings.TrimSpace(strings.TrimPrefix(line, "Endpoints:"))
+		} else if strings.HasPrefix(line, "Session Affinity:") {
+			details.SessionAffinity = strings.TrimSpace(strings.TrimPrefix(line, "Session Affinity:"))
 		} else if strings.HasPrefix(line, "Events:") {
 			details.Events = strings.TrimSpace(strings.TrimPrefix(line, "Events:"))
 		}

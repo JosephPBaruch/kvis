@@ -44,3 +44,32 @@ type EndpointDetails struct {
 	IP          string `json:"ip"`
 	Port        string `json:"port"`
 }
+
+type NodeDetails struct {
+	Name                    string `json:"name"`
+	Roles                   string `json:"roles"`
+	Labels                  string `json:"labels"`
+	Annotations             string `json:"annotations"`
+	CreationTimestamp       string `json:"creationTimestamp"`
+	Taints                  string `json:"taints"`
+	Unschedulable           string `json:"unschedulable"`
+	InternalIP              string `json:"internalIP"`
+	Hostname                string `json:"hostname"`
+	CPU                     string `json:"cpu"`
+	EphemeralStorage        string `json:"ephemeralStorage"`
+	Memory                  string `json:"memory"`
+	Pods                    string `json:"pods"`
+	MachineID               string `json:"machineID"`
+	SystemUUID              string `json:"systemUUID"`
+	BootID                  string `json:"bootID"`
+	KernelVersion           string `json:"kernelVersion"`
+	OSImage                 string `json:"osImage"`
+	OperatingSystem         string `json:"operatingSystem"`
+	Architecture            string `json:"architecture"`
+	ContainerRuntimeVersion string `json:"containerRuntimeVersion"`
+	KubeletVersion          string `json:"kubeletVersion"`
+	KubeProxyVersion        string `json:"kubeProxyVersion"`
+	PodCIDR                 string `json:"podCIDR"`
+	PodCIDRs                string `json:"podCIDRs"`
+	ProviderID              string `json:"providerID"`
+}

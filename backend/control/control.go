@@ -127,8 +127,8 @@ func GetPodDetails(podName string) (*types.ResourceDetails, error) {
 	return details, nil
 }
 
-func GetNodeDetails(nodeName string) (*types.ResourceDetails, error) {
-	details := &types.ResourceDetails{}
+func GetNodeDetails(nodeName string) (*types.NodeDetails, error) {
+	details := &types.NodeDetails{}
 	// Get describe
 	describeCmd := exec.Command("kubectl", "describe", "node", nodeName)
 	var describeOut bytes.Buffer
@@ -145,30 +145,65 @@ func GetNodeDetails(nodeName string) (*types.ResourceDetails, error) {
 		line = strings.TrimSpace(line)
 		if strings.HasPrefix(line, "Name:") {
 			details.Name = strings.TrimSpace(strings.TrimPrefix(line, "Name:"))
-		} else if strings.HasPrefix(line, "Namespace:") {
-			details.Namespace = strings.TrimSpace(strings.TrimPrefix(line, "Namespace:"))
+		} else if strings.HasPrefix(line, "Roles:") {
+			details.Roles = strings.TrimSpace(strings.TrimPrefix(line, "Roles:"))
 		} else if strings.HasPrefix(line, "Labels:") {
 			details.Labels = strings.TrimSpace(strings.TrimPrefix(line, "Labels:"))
 		} else if strings.HasPrefix(line, "Annotations:") {
 			details.Annotations = strings.TrimSpace(strings.TrimPrefix(line, "Annotations:"))
-		} else if strings.HasPrefix(line, "Status:") {
-			details.Status = strings.TrimSpace(strings.TrimPrefix(line, "Status:"))
-		} else if strings.HasPrefix(line, "IP:") {
-			details.IP = strings.TrimSpace(strings.TrimPrefix(line, "IP:"))
-		} else if strings.HasPrefix(line, "Controlled By:") {
-			details.ControlledBy = strings.TrimSpace(strings.TrimPrefix(line, "Controlled By:"))
-		} else if strings.HasPrefix(line, "Conditions:") {
-			details.Conditions = strings.TrimSpace(strings.TrimPrefix(line, "Conditions:"))
-		} else if strings.HasPrefix(line, "Volumes:") {
-			details.Volumes = strings.TrimSpace(strings.TrimPrefix(line, "Volumes:"))
-		} else if strings.HasPrefix(line, "QoS Class:") {
-			details.QoSClass = strings.TrimSpace(strings.TrimPrefix(line, "QoS Class:"))
-		} else if strings.HasPrefix(line, "Node-Selectors:") {
-			details.NodeSelectors = strings.TrimSpace(strings.TrimPrefix(line, "Node-Selectors:"))
-		} else if strings.HasPrefix(line, "Tolerations:") {
-			details.Tolerations = strings.TrimSpace(strings.TrimPrefix(line, "Tolerations:"))
-		} else if strings.HasPrefix(line, "Events:") {
-			details.Events = strings.TrimSpace(strings.TrimPrefix(line, "Events:"))
+		} else if strings.HasPrefix(line, "CreationTimestamp:") {
+			details.CreationTimestamp = strings.TrimSpace(strings.TrimPrefix(line, "CreationTimestamp:"))
+		} else if strings.HasPrefix(line, "Taints:") {
+			details.Taints = strings.TrimSpace(strings.TrimPrefix(line, "Taints:"))
+		} else if strings.HasPrefix(line, "Unschedulable:") {
+			details.Unschedulable = strings.TrimSpace(strings.TrimPrefix(line, "Unschedulable:"))
+		} else if strings.HasPrefix(line, "Addresses:") {
+			// Skip the header line
+			continue
+		} else if strings.HasPrefix(line, "InternalIP:") {
+			details.InternalIP = strings.TrimSpace(strings.TrimPrefix(line, "InternalIP:"))
+		} else if strings.HasPrefix(line, "Hostname:") {
+			details.Hostname = strings.TrimSpace(strings.TrimPrefix(line, "Hostname:"))
+		} else if strings.HasPrefix(line, "Capacity:") {
+			// Skip the header line
+			continue
+		} else if strings.HasPrefix(line, "cpu:") {
+			details.CPU = strings.TrimSpace(strings.TrimPrefix(line, "cpu:"))
+		} else if strings.HasPrefix(line, "ephemeral-storage:") {
+			details.EphemeralStorage = strings.TrimSpace(strings.TrimPrefix(line, "ephemeral-storage:"))
+		} else if strings.HasPrefix(line, "memory:") {
+			details.Memory = strings.TrimSpace(strings.TrimPrefix(line, "memory:"))
+		} else if strings.HasPrefix(line, "pods:") {
+			details.Pods = strings.TrimSpace(strings.TrimPrefix(line, "pods:"))
+		} else if strings.HasPrefix(line, "System Info:") {
+			// Skip the header line
+			continue
+		} else if strings.HasPrefix(line, "Machine ID:") {
+			details.MachineID = strings.TrimSpace(strings.TrimPrefix(line, "Machine ID:"))
+		} else if strings.HasPrefix(line, "System UUID:") {
+			details.SystemUUID = strings.TrimSpace(strings.TrimPrefix(line, "System UUID:"))
+		} else if strings.HasPrefix(line, "Boot ID:") {
+			details.BootID = strings.TrimSpace(strings.TrimPrefix(line, "Boot ID:"))
+		} else if strings.HasPrefix(line, "Kernel Version:") {
+			details.KernelVersion = strings.TrimSpace(strings.TrimPrefix(line, "Kernel Version:"))
+		} else if strings.HasPrefix(line, "OS Image:") {
+			details.OSImage = strings.TrimSpace(strings.TrimPrefix(line, "OS Image:"))
+		} else if strings.HasPrefix(line, "Operating System:") {
+			details.OperatingSystem = strings.TrimSpace(strings.TrimPrefix(line, "Operating System:"))
+		} else if strings.HasPrefix(line, "Architecture:") {
+			details.Architecture = strings.TrimSpace(strings.TrimPrefix(line, "Architecture:"))
+		} else if strings.HasPrefix(line, "Container Runtime Version:") {
+			details.ContainerRuntimeVersion = strings.TrimSpace(strings.TrimPrefix(line, "Container Runtime Version:"))
+		} else if strings.HasPrefix(line, "Kubelet Version:") {
+			details.KubeletVersion = strings.TrimSpace(strings.TrimPrefix(line, "Kubelet Version:"))
+		} else if strings.HasPrefix(line, "Kube-Proxy Version:") {
+			details.KubeProxyVersion = strings.TrimSpace(strings.TrimPrefix(line, "Kube-Proxy Version:"))
+		} else if strings.HasPrefix(line, "PodCIDR:") {
+			details.PodCIDR = strings.TrimSpace(strings.TrimPrefix(line, "PodCIDR:"))
+		} else if strings.HasPrefix(line, "PodCIDRs:") {
+			details.PodCIDRs = strings.TrimSpace(strings.TrimPrefix(line, "PodCIDRs:"))
+		} else if strings.HasPrefix(line, "ProviderID:") {
+			details.ProviderID = strings.TrimSpace(strings.TrimPrefix(line, "ProviderID:"))
 		}
 	}
 

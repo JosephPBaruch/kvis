@@ -19,6 +19,7 @@
 These will display information from kubectl describe, logs, events
 
     /pods/{name_id}
+        Complete
     /nodes/{name_id}
     /deployments/{name_id}
     /services/{name_id}
@@ -27,5 +28,4 @@ These will display information from kubectl describe, logs, events
     /pvc/{name_id}
     /ingress/{name_id}
     /endpoints/{name_id}
-
-TODO: https://github.com/JosephPBaruch/kvis/issues/12
+        / Complete 

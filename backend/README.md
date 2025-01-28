@@ -23,9 +23,11 @@ These will display information from kubectl describe, logs, events
     /nodes/{name_id}
     /deployments/{name_id}
     /services/{name_id}
+        Complete
     /namespaces/{name_id}
     /configmaps/{name_id}
     /pvc/{name_id}
     /ingress/{name_id}
+        Complete
     /endpoints/{name_id}
         / Complete 

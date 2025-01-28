@@ -481,8 +481,8 @@ func GetEndpointDetails(endpointName string) (*types.EndpointDetails, error) {
 	return details, nil
 }
 
-func GetIngressDetails(ingressName string) (*types.ResourceDetails, error) {
-	details := &types.ResourceDetails{}
+func GetIngressDetails(ingressName string) (*types.IngressDetails, error) {
+	details := &types.IngressDetails{}
 	// Get describe
 	describeCmd := exec.Command("kubectl", "describe", "ingress", ingressName)
 	var describeOut bytes.Buffer
@@ -501,26 +501,34 @@ func GetIngressDetails(ingressName string) (*types.ResourceDetails, error) {
 			details.Name = strings.TrimSpace(strings.TrimPrefix(line, "Name:"))
 		} else if strings.HasPrefix(line, "Namespace:") {
 			details.Namespace = strings.TrimSpace(strings.TrimPrefix(line, "Namespace:"))
-		} else if strings.HasPrefix(line, "Labels:") {
-			details.Labels = strings.TrimSpace(strings.TrimPrefix(line, "Labels:"))
+		} else if strings.HasPrefix(line, "Address:") {
+			details.Address = strings.TrimSpace(strings.TrimPrefix(line, "Address:"))
+		} else if strings.HasPrefix(line, "Ingress Class:") {
+			details.IngressClass = strings.TrimSpace(strings.TrimPrefix(line, "Ingress Class:"))
+		} else if strings.HasPrefix(line, "Default backend:") {
+			details.DefaultBackend = strings.TrimSpace(strings.TrimPrefix(line, "Default backend:"))
+		} else if strings.HasPrefix(line, "Rules:") {
+			// Skip the header line
+			continue
+		} else if strings.HasPrefix(line, "Host") {
+			// Skip the header line
+			continue
 		} else if strings.HasPrefix(line, "Annotations:") {
 			details.Annotations = strings.TrimSpace(strings.TrimPrefix(line, "Annotations:"))
-		} else if strings.HasPrefix(line, "Status:") {
-			details.Status = strings.TrimSpace(strings.TrimPrefix(line, "Status:"))
-		} else if strings.HasPrefix(line, "Controlled By:") {
-			details.ControlledBy = strings.TrimSpace(strings.TrimPrefix(line, "Controlled By:"))
-		} else if strings.HasPrefix(line, "Conditions:") {
-			details.Conditions = strings.TrimSpace(strings.TrimPrefix(line, "Conditions:"))
-		} else if strings.HasPrefix(line, "Volumes:") {
-			details.Volumes = strings.TrimSpace(strings.TrimPrefix(line, "Volumes:"))
-		} else if strings.HasPrefix(line, "QoS Class:") {
-			details.QoSClass = strings.TrimSpace(strings.TrimPrefix(line, "QoS Class:"))
-		} else if strings.HasPrefix(line, "Node-Selectors:") {
-			details.NodeSelectors = strings.TrimSpace(strings.TrimPrefix(line, "Node-Selectors:"))
-		} else if strings.HasPrefix(line, "Tolerations:") {
-			details.Tolerations = strings.TrimSpace(strings.TrimPrefix(line, "Tolerations:"))
 		} else if strings.HasPrefix(line, "Events:") {
 			details.Events = strings.TrimSpace(strings.TrimPrefix(line, "Events:"))
+		} else if strings.HasPrefix(line, "*") {
+			// Parse rules
+			rule := types.IngressRule{}
+			rule.Host = strings.TrimSpace(strings.TrimPrefix(line, "*"))
+			details.Rules = append(details.Rules, rule)
+		} else if strings.HasPrefix(line, "/") {
+			// Parse path and backend
+			parts := strings.Fields(line)
+			if len(parts) >= 3 {
+				details.Rules[len(details.Rules)-1].Path = parts[0]
+				details.Rules[len(details.Rules)-1].Backend = parts[2]
+			}
 		}
 	}
 

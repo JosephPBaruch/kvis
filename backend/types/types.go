@@ -91,3 +91,20 @@ type ServiceDetails struct {
 	SessionAffinity string `json:"sessionAffinity"`
 	Events          string `json:"events"`
 }
+
+type IngressDetails struct {
+	Name           string        `json:"name"`
+	Namespace      string        `json:"namespace"`
+	Address        string        `json:"address"`
+	IngressClass   string        `json:"ingressClass"`
+	DefaultBackend string        `json:"defaultBackend"`
+	Rules          []IngressRule `json:"rules"`
+	Annotations    string        `json:"annotations"`
+	Events         string        `json:"events"`
+}
+
+type IngressRule struct {
+	Host    string `json:"host"`
+	Path    string `json:"path"`
+	Backend string `json:"backend"`
+}

@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: kvis-backend
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: kvis-backend
@@ -20,3 +20,10 @@ spec:
         env:
         - name: BACKEND_PORT
           value: "8082"
+        volumeMounts:
+        - mountPath: "/usr/share/nginx/html"
+          name: dummy-storage
+      volumes:
+      - name: dummy-storage
+        persistentVolumeClaim:
+          claimName: dummy-pvc

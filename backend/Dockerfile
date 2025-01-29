@@ -5,6 +5,7 @@ WORKDIR /app
 
 # Copy go.mod and go.sum files
 COPY go.mod ./
+COPY go.sum ./
 
 # Download dependencies
 RUN go mod download
@@ -22,6 +23,7 @@ WORKDIR /root/
 
 # Copy the built application from the builder stage
 COPY --from=builder /app/main .
+COPY --from=builder /app/prod.env .env 
 
 # Expose port 8082
 EXPOSE 8082

@@ -50,11 +50,6 @@ else
     fi
 fi
 
-# Create a new k3d cluster
-# k3d cluster create dummy-cluster \
-#     --port 8081:8081@loadbalancer \
-#     --registry-use $REGISTRY
-
 k3d cluster create dummy-cluster \
     --api-port 6550 \
     -p "8081:8081@loadbalancer" \
@@ -104,3 +99,5 @@ kubectl apply -f client_service.yaml
 kubectl apply -f backend_deployment.yaml
 kubectl apply -f backend_service.yaml
 kubectl apply -f pvc.yaml
+
+./curl_pod/pipeline.sh

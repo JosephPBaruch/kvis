@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Drawer, List, ListItemButton, ListItemText, Button, Box } from "@mui/material";
+import { Drawer, List, ListItemButton, ListItemText, Button } from "@mui/material";
 import { makeStyles } from '@mui/styles';
 import Header from './components/Header';
 

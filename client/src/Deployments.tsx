@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Drawer, List, ListItemButton, ListItemText, Button } from "@mui/material";
 import { makeStyles } from '@mui/styles';
 import Header from './components/Header';
+import deploymentsList from './utils/http';
+import { Deployment } from './types/deployment';
 
 const useStyles = makeStyles({
   root: {
@@ -39,6 +41,20 @@ const useStyles = makeStyles({
 function Deployments() {
   const classes = useStyles();
   const [drawerOpen, setDrawerOpen] = useState(true);
+  const [deployments, setDeployments] = useState<Deployment[]>([]);
+
+  useEffect(() => {
+    const fetchDeployments = async () => {
+      try {
+        const data = await deploymentsList();
+        setDeployments(data);
+      } catch (error) {
+        console.error('Error fetching deployments:', error);
+      }
+    };
+
+    fetchDeployments();
+  }, []);
 
   const handleDrawerClose = () => {
     setDrawerOpen(false);
@@ -58,15 +74,11 @@ function Deployments() {
         classes={{ paper: drawerOpen ? classes.drawer : classes.drawerClosed }}
       >
         <List>
-          <ListItemButton component="li" className={classes.listItem}>
-            <ListItemText primary="Item 1" />
-          </ListItemButton>
-          <ListItemButton component="li" className={classes.listItem}>
-            <ListItemText primary="Item 2" />
-          </ListItemButton>
-          <ListItemButton component="li" className={classes.listItem}>
-            <ListItemText primary="Item 3" />
-          </ListItemButton>
+          {deployments.map((deployment, index) => (
+            <ListItemButton component="li" className={classes.listItem} key={index}>
+              <ListItemText primary={deployment.name} />
+            </ListItemButton>
+          ))}
           {!drawerOpen || (
             <Button variant="contained" color="primary" className={classes.closeButton} onClick={handleDrawerClose}>
               Close Drawer

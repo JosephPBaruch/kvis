@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Drawer, List, ListItemButton, ListItemText, Button, Box } from "@mui/material";
 import { makeStyles } from '@mui/styles';
 import Header from './components/Header';
@@ -55,7 +55,7 @@ function Deployments() {
         variant="persistent"
         anchor="left"
         open={drawerOpen}
-        className={drawerOpen ? classes.drawer : classes.drawerClosed }
+        classes={{ paper: drawerOpen ? classes.drawer : classes.drawerClosed }}
       >
         <List>
           <ListItemButton component="li" className={classes.listItem}>
@@ -67,15 +67,12 @@ function Deployments() {
           <ListItemButton component="li" className={classes.listItem}>
             <ListItemText primary="Item 3" />
           </ListItemButton>
-        </List>
-        <Box>
           {!drawerOpen || (
             <Button variant="contained" color="primary" className={classes.closeButton} onClick={handleDrawerClose}>
               Close Drawer
             </Button>
           )}
-        </Box>
-        
+        </List>        
       </Drawer>
       {drawerOpen || (<Button variant="contained" color="primary" className={classes.closeButton} onClick={handleDrawerOpen}>
               Open Drawer

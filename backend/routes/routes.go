@@ -9,6 +9,11 @@ import (
 
 func Routes() {
 	r := mux.NewRouter()
+
+	// Add CORS middleware
+	r.Use(mux.CORSMethodMiddleware(r))
+	r.Use(corsMiddleware)
+
 	r.HandleFunc("/", handlers.DefaultHandler)
 	r.HandleFunc("/pods", handlers.PodsHandler)
 	r.HandleFunc("/pods/{id}", handlers.PodByNameHandler)
@@ -30,4 +35,17 @@ func Routes() {
 	r.HandleFunc("/endpoints/{id}", handlers.EndpointByNameHandler)
 
 	http.Handle("/", r)
+}
+
+func corsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
 }

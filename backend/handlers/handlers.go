@@ -73,6 +73,8 @@ func NodeByNameHandler(w http.ResponseWriter, r *http.Request) {
 func DeploymentsHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
+	print("DeploymentsHandler")
+
 	deployments, err := control.Get("deployments")
 	if err != nil {
 		http.Error(w, "Failed to get deployments", http.StatusInternalServerError)

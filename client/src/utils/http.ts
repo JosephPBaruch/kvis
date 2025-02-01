@@ -1,6 +1,6 @@
 import { Deployment } from '../types/deployment';
 
-const baseURL = 'localhost:8090';
+const baseURL = 'http://localhost:8090';
 
 const deploymentsList = async (): Promise<Deployment[]> => {
   const response = await fetch(`${baseURL}/deployments`, {
@@ -11,8 +11,9 @@ const deploymentsList = async (): Promise<Deployment[]> => {
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
-  console.log(response.json());
-  return response.json();
+  const data = await response.json(); // Store the result of response.json()
+  console.log(data);
+  return data;
 };
 
 export default deploymentsList;

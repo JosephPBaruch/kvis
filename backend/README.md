@@ -35,4 +35,24 @@ These will display information from kubectl describe, logs, events
     /ingress/{name_id}
         Complete
     /endpoints/{name_id}
-        Complete 
+        Complete
+
+# Backend Server
+
+## Running the Server
+
+To run the server with HTTPS, you need to generate SSL certificates. You can use OpenSSL to generate a self-signed certificate for testing purposes.
+
+### Generate SSL Certificates
+
+```sh
+openssl req -x509 -newkey rsa:4096 -keyout server.key -out server.crt -days 365 -nodes
+```
+
+### Run the Server
+
+```sh
+go run main.go
+```
+
+The server will be available at https://localhost:8082.

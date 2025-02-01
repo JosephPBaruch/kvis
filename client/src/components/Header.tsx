@@ -23,7 +23,7 @@ function Header() {
       <Container maxWidth={false}>
         <Toolbar>
           <Typography variant="h6" className={classes.title}>
-            My Application
+            Kvis
           </Typography>
           <Button color="inherit">
             <a href="/" className={classes.link}>Home</a>

@@ -7,12 +7,14 @@ const useStyles = makeStyles({
   root: {
     padding: '20px',
     marginTop: '64px', // Adjust for the height of the AppBar
+    transition: 'margin-left 0.3s', // Smooth transition for margin change
   },
   drawer: {
     width: 250,
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
+    marginTop: '64px', // Adjust for the height of the AppBar
   },
   header: {
     color: '#3f51b5',
@@ -25,7 +27,12 @@ const useStyles = makeStyles({
     margin: '16px',
   },
   drawerClosed: {
-    width: 50,
+    width: "50px",
+    marginTop: '64px', // Adjust for the height of the AppBar
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'center', // Center the button horizontally
   },
 });
 
@@ -48,7 +55,7 @@ function Deployments() {
         variant="persistent"
         anchor="left"
         open={drawerOpen}
-        classes={{ paper: drawerOpen ? classes.drawer : classes.drawerClosed }}
+        className={drawerOpen ? classes.drawer : classes.drawerClosed }
       >
         <List>
           <ListItemButton component="li" className={classes.listItem}>
@@ -62,18 +69,18 @@ function Deployments() {
           </ListItemButton>
         </List>
         <Box>
-          {drawerOpen ? (
+          {!drawerOpen || (
             <Button variant="contained" color="primary" className={classes.closeButton} onClick={handleDrawerClose}>
               Close Drawer
             </Button>
-          ) : (
-            <Button variant="contained" color="primary" className={classes.closeButton} onClick={handleDrawerOpen}>
-              Open Drawer
-            </Button>
           )}
         </Box>
+        
       </Drawer>
-      <div className={classes.root}>
+      {drawerOpen || (<Button variant="contained" color="primary" className={classes.closeButton} onClick={handleDrawerOpen}>
+              Open Drawer
+            </Button>)}
+      <div className={classes.root} style={{ marginLeft: drawerOpen ? '250px' : '50px' }}>
         <h1 className={classes.header}>Details</h1>
       </div>
     </>

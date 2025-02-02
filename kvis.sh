@@ -5,7 +5,6 @@ start_backend() {
     echo "Running the backend..."
     cd backend
     nohup go run main.go > backend.log 2>&1 &
-    BACKEND_PID=$!
     cd ..
 }
 
@@ -14,14 +13,13 @@ start_frontend() {
     echo "Running the frontend..."
     cd client
     npm run dev &
-    FRONTEND_PID=$!
     cd ..
 }
 
 # Function to clean up processes
 cleanup() {
-    echo "Stopping the backend and frontend..."
-    kill $BACKEND_PID $FRONTEND_PID
+    echo "Stopping the backend..."
+    pgrep go run main.go | xargs kill
     echo "Stopping the cluster..."
     cd dummy
     ./pipeline.sh stop

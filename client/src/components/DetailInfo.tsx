@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { DeploymentDetailProps, DeploymentDetails } from '../types/types';
+import { KubePageProps, DetailInformationType } from '../types/types';
 import { Details } from '../utils/http';
 
-const DetailInformation: React.FC<DeploymentDetailProps> = ({ type, name }) => {
-  const [details, setDetails] = useState<DeploymentDetails | null>(null);
+const DetailInformation: React.FC<KubePageProps> = ({ typeOption, name }) => {
+  const [details, setDetails] = useState<DetailInformationType>(null);
 
   useEffect(() => {
     const fetchDetails = async () => {
       try {
-        const data: DeploymentDetails = await Details(type, name);
+        const data: DetailInformationType = await Details(typeOption, name);
         setDetails(data);
       } catch (error) {
-        console.error('Error fetching deployment details:', error);
+        console.error('Error fetching details:', error);
       }
     };
 
     fetchDetails();
-  }, [type, name]);
+  }, [typeOption, name]);
 
   if (!details) {
     return <div>Loading...</div>;

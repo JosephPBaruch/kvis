@@ -3,8 +3,8 @@ import { Drawer, List, ListItemButton, ListItemText, Button } from "@mui/materia
 import { makeStyles } from '@mui/styles';
 import Header from './components/Header';
 import { ListObjects } from './utils/http';
-import { Deployment } from './types/types';
-import DetailInformation from './components/DeploymentDetail';
+import { ListObject, KubePageProps } from './types/types';
+import DetailInformation from './components/DetailInfo';
 
 const useStyles = makeStyles({
   root: {
@@ -42,24 +42,24 @@ const useStyles = makeStyles({
   },
 });
 
-function Deployments() {
+const KubePage: React.FC<KubePageProps> = ({ typeOption }) => {
   const classes = useStyles();
   const [drawerOpen, setDrawerOpen] = useState(true);
-  const [deployments, setDeployments] = useState<Deployment[]>([]);
-  const [selectedDeployment, setSelectedDeployment] = useState<Deployment | null>(null);
+  const [list, setList] = useState<ListObject[]>([]);
+  const [selected, setSelected] = useState<ListObject | null>(null);
 
   useEffect(() => {
-    const fetchDeployments = async () => {
+    const fetchList = async () => {
       try {
-        const data = await ListObjects("deployments");
-        setDeployments(data);
+        const data: ListObject[] = await ListObjects(typeOption);
+        setList(data);
       } catch (error) {
-        console.error('Error fetching deployments:', error);
+        console.error('Error fetching list:', error);
       }
     };
 
-    fetchDeployments();
-  }, []);
+    fetchList();
+  }, [typeOption]);
 
   const handleDrawerClose = () => {
     setDrawerOpen(false);
@@ -69,8 +69,8 @@ function Deployments() {
     setDrawerOpen(true);
   };
 
-  const handleListItemClick = (deployment: Deployment) => {
-    setSelectedDeployment(deployment);
+  const handleListItemClick = (item: ListObject) => {
+    setSelected(item);
   };
 
   return (
@@ -83,14 +83,14 @@ function Deployments() {
         classes={{ paper: drawerOpen ? classes.drawer : classes.drawerClosed }}
       >
         <List>
-          {deployments.map((deployment, index) => (
+          {list && list.map((item, index) => (
             <ListItemButton
               component="li"
-              className={`${classes.listItem} ${selectedDeployment === deployment ? classes.selectedItem : ''}`}
+              className={`${classes.listItem} ${selected === item ? classes.selectedItem : ''}`}
               key={index}
-              onClick={() => handleListItemClick(deployment)}
+              onClick={() => handleListItemClick(item)}
             >
-              <ListItemText primary={deployment.name} />
+              <ListItemText primary={item.name} />
             </ListItemButton>
           ))}
           {!drawerOpen || (
@@ -104,12 +104,12 @@ function Deployments() {
               Open Drawer
             </Button>)}
       <div className={classes.root} style={{ marginLeft: drawerOpen ? '250px' : '50px' }}>
-        {selectedDeployment && (
-          <DetailInformation type="deployments" name={selectedDeployment.name} />
+        {selected && (
+          <DetailInformation typeOption={typeOption} name={selected.name} />
         )}
       </div>
     </>
   );
 }
 
-export default Deployments;
+export default KubePage;

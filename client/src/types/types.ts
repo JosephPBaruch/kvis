@@ -1,14 +1,4 @@
-export interface Deployment {
-  name: string | undefined;
-
-}
-
-export interface DeploymentDetailProps {
-  name: string | undefined;
-  type: string | undefined;
-}
-
-export interface DeploymentDetails {
+interface DeploymentDetails {
   name: string;
   namespace: string;
   creationTimestamp: string;
@@ -39,6 +29,19 @@ export interface DeploymentDetails {
   events: string;
 }
 
-export type ReturnPromiseDetails = Promise<DeploymentDetails| string>;
+export interface KubePageProps {
+  name?: string | undefined;
+  typeOption: string | undefined;
+}
 
-export type ReturnPromiseList = Promise<Deployment | string>;
+export interface ListObject {
+  name: string | undefined;
+}
+
+export type ReturnPromiseDetails = Promise<DeploymentDetails | null>;
+
+export type ReturnPromiseList = Promise<ListObject[]>;
+
+export type DetailInformationType = DeploymentDetails | null;
+
+export type ListInfoType = ListObject[] | null;

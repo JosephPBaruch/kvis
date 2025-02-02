@@ -104,7 +104,6 @@ function Deployments() {
               Open Drawer
             </Button>)}
       <div className={classes.root} style={{ marginLeft: drawerOpen ? '250px' : '50px' }}>
-        <h1 className={classes.header}>Details</h1>
         {selectedDeployment && (
           <DeploymentDetail name={selectedDeployment.name} />
         )}

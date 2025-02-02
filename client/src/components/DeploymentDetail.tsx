@@ -24,7 +24,7 @@ const DeploymentDetail: React.FC<DeploymentDetailProps> = ({ name }) => {
 
   return (
     <div>
-      <h2>Deployment Details</h2>
+      <h1>{name}</h1>
       <p><strong>Name:</strong> {details.name}</p>
       <p><strong>Namespace:</strong> {details.namespace}</p>
       <p><strong>Creation Timestamp:</strong> {details.creationTimestamp}</p>

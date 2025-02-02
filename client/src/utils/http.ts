@@ -1,4 +1,4 @@
-import { Deployment } from '../types/types';
+import { Deployment, DeploymentDetails } from '../types/types';
 
 const baseURL = 'http://localhost:8090';
 
@@ -15,7 +15,7 @@ const deploymentsList = async (): Promise<Deployment[]> => {
   return data;
 };
 
-const deploymentDetails = async (name: string): Promise<Deployment[]> => {
+const deploymentDetails = async (name: string): Promise<DeploymentDetails> => {
   const response = await fetch(`${baseURL}/deployments/${name}`, {
     headers: {
       'Content-Type': 'application/json',
@@ -24,7 +24,7 @@ const deploymentDetails = async (name: string): Promise<Deployment[]> => {
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
-  const data = await response.json(); 
+  const data = await response.json();
   console.log(data);
   return data;
 };

@@ -34,6 +34,27 @@ function Header() {
           <Button color="inherit">
             <a href="/pods" className={classes.link}>Pods</a>
           </Button>
+          <Button color="inherit">
+            <a href="/services" className={classes.link}>Services</a>
+          </Button>
+          <Button color="inherit">
+            <a href="/configmaps" className={classes.link}>ConfigMaps</a>
+          </Button>
+          <Button color="inherit">
+            <a href="/ingresses" className={classes.link}>Ingresses</a>
+          </Button>
+          <Button color="inherit">
+            <a href="/pvcs" className={classes.link}>PVCs</a>
+          </Button>
+          <Button color="inherit">
+            <a href="/endpoints" className={classes.link}>Endpoints</a>
+          </Button>
+          <Button color="inherit">
+            <a href="/nodes" className={classes.link}>Nodes</a>
+          </Button>
+          <Button color="inherit">
+            <a href="/namespaces" className={classes.link}>Namespaces</a>
+          </Button>
         </Toolbar>
       </Container>
     </AppBar>

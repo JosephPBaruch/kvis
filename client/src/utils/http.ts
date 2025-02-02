@@ -15,8 +15,8 @@ const deploymentsList = async (): Promise<Deployment[]> => {
   return data;
 };
 
-const deploymentDetails = async (name: string): Promise<DeploymentDetails> => {
-  const response = await fetch(`${baseURL}/deployments/${name}`, {
+const Details = async (subpath: string, name: string | undefined): Promise<DeploymentDetails> => {
+  const response = await fetch(`${baseURL}/${subpath}/${name}`, {
     headers: {
       'Content-Type': 'application/json',
     },
@@ -25,11 +25,10 @@ const deploymentDetails = async (name: string): Promise<DeploymentDetails> => {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
   const data = await response.json();
-  console.log(data);
   return data;
 };
 
 export {
   deploymentsList,
-  deploymentDetails,
+  Details,
 };

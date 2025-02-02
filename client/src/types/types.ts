@@ -37,3 +37,5 @@ export interface DeploymentDetails {
   events: string;
 }
 
+export type ReturnPromiseDetails = Promise<DeploymentDetails| string>;
+

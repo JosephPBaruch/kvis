@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { DeploymentDetailProps, DeploymentDetails } from '../types/types';
-import { deploymentDetails } from '../utils/http';
+import { Details } from '../utils/http';
 
 const DeploymentDetail: React.FC<DeploymentDetailProps> = ({ name }) => {
   const [details, setDetails] = useState<DeploymentDetails | null>(null);
@@ -8,7 +8,7 @@ const DeploymentDetail: React.FC<DeploymentDetailProps> = ({ name }) => {
   useEffect(() => {
     const fetchDetails = async () => {
       try {
-        const data = await deploymentDetails(name!);
+        const data = await Details("deployments", name);
         setDetails(data);
       } catch (error) {
         console.error('Error fetching deployment details:', error);
@@ -23,7 +23,7 @@ const DeploymentDetail: React.FC<DeploymentDetailProps> = ({ name }) => {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const renderDetails = (obj: any, parentKey: string = ''): JSX.Element[] => {
+  const renderDetails = (obj: Record<string, any>, parentKey: string = ''): JSX.Element[] => {
     return Object.keys(obj).map((key) => {
       const value = obj[key];
       const displayKey = parentKey ? `${parentKey}.${key}` : key;
@@ -47,7 +47,7 @@ const DeploymentDetail: React.FC<DeploymentDetailProps> = ({ name }) => {
 
   return (
     <div>
-      <h2>{name}</h2>
+      <h2>Deployment Details</h2>
       {renderDetails(details)}
     </div>
   );

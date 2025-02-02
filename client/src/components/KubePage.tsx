@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Drawer, List, ListItemButton, ListItemText, Button } from "@mui/material";
 import { makeStyles } from '@mui/styles';
-import Header from './components/Header';
-import { ListObjects } from './utils/http';
-import { ListObject, KubePageProps } from './types/types';
-import DetailInformation from './components/Details';
+import Header from './Header';
+import { ListObjects } from '../utils/http';
+import { ListObject, KubePageProps } from '../types/types';
+import DetailInformation from './Details';
 
 const useStyles = makeStyles({
   root: {

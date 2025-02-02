@@ -31,7 +31,9 @@ function Header() {
           <Button color="inherit">
             <a href="/deployments" className={classes.link}>Deployments</a>
           </Button>
-          {/* Add more links as needed */}
+          <Button color="inherit">
+            <a href="/pods" className={classes.link}>Pods</a>
+          </Button>
         </Toolbar>
       </Container>
     </AppBar>

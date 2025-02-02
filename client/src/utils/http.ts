@@ -11,9 +11,25 @@ const deploymentsList = async (): Promise<Deployment[]> => {
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
-  const data = await response.json(); // Store the result of response.json()
+  const data = await response.json();
+  return data;
+};
+
+const deploymentDetails = async (name: string): Promise<Deployment[]> => {
+  const response = await fetch(`${baseURL}/deployments/${name}`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  const data = await response.json(); 
   console.log(data);
   return data;
 };
 
-export default deploymentsList;
+export {
+  deploymentsList,
+  deploymentDetails,
+};

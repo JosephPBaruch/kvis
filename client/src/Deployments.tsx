@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import { Drawer, List, ListItemButton, ListItemText, Button } from "@mui/material";
 import { makeStyles } from '@mui/styles';
 import Header from './components/Header';
-import deploymentsList from './utils/http';
+import { deploymentsList } from './utils/http';
 import { Deployment } from './types/types';
+import DeploymentDetail from './components/DeploymentDetail';
 
 const useStyles = makeStyles({
   root: {
@@ -36,12 +37,16 @@ const useStyles = makeStyles({
     justifyContent: 'space-between',
     alignItems: 'center', // Center the button horizontally
   },
+  selectedItem: {
+    backgroundColor: '#e0e0e0', // Change background color to indicate selection
+  },
 });
 
 function Deployments() {
   const classes = useStyles();
   const [drawerOpen, setDrawerOpen] = useState(true);
   const [deployments, setDeployments] = useState<Deployment[]>([]);
+  const [selectedDeployment, setSelectedDeployment] = useState<Deployment | null>(null);
 
   useEffect(() => {
     const fetchDeployments = async () => {
@@ -64,6 +69,10 @@ function Deployments() {
     setDrawerOpen(true);
   };
 
+  const handleListItemClick = (deployment: Deployment) => {
+    setSelectedDeployment(deployment);
+  };
+
   return (
     <>
       <Header />
@@ -75,7 +84,12 @@ function Deployments() {
       >
         <List>
           {deployments.map((deployment, index) => (
-            <ListItemButton component="li" className={classes.listItem} key={index}>
+            <ListItemButton
+              component="li"
+              className={`${classes.listItem} ${selectedDeployment === deployment ? classes.selectedItem : ''}`}
+              key={index}
+              onClick={() => handleListItemClick(deployment)}
+            >
               <ListItemText primary={deployment.name} />
             </ListItemButton>
           ))}
@@ -91,6 +105,9 @@ function Deployments() {
             </Button>)}
       <div className={classes.root} style={{ marginLeft: drawerOpen ? '250px' : '50px' }}>
         <h1 className={classes.header}>Details</h1>
+        {selectedDeployment && (
+          <DeploymentDetail name={selectedDeployment.name} />
+        )}
       </div>
     </>
   );

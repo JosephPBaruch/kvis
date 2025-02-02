@@ -19,43 +19,36 @@ const DeploymentDetail: React.FC<DeploymentDetailProps> = ({ name }) => {
   }, [name]);
 
   if (!details) {
-    return <div>error: a resource cannot be retrieved by name across all namespaces</div>;
+    return <div>Loading...</div>;
   }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const renderDetails = (obj: any, parentKey: string = ''): JSX.Element[] => {
+    return Object.keys(obj).map((key) => {
+      const value = obj[key];
+      const displayKey = parentKey ? `${parentKey}.${key}` : key;
+
+      if (typeof value === 'object' && value !== null) {
+        return (
+          <div key={displayKey}>
+            <h3>{displayKey}</h3>
+            {renderDetails(value, displayKey)}
+          </div>
+        );
+      }
+
+      return (
+        <p key={displayKey}>
+          <strong>{displayKey}:</strong> {value}
+        </p>
+      );
+    });
+  };
 
   return (
     <div>
-      <h1>{name}</h1>
-      <p><strong>Name:</strong> {details.name}</p>
-      <p><strong>Namespace:</strong> {details.namespace}</p>
-      <p><strong>Creation Timestamp:</strong> {details.creationTimestamp}</p>
-      <p><strong>Labels:</strong> {details.labels}</p>
-      <p><strong>Annotations:</strong> {details.annotations}</p>
-      <p><strong>Selector:</strong> {details.selector}</p>
-      <p><strong>Replicas:</strong> {details.replicas}</p>
-      <p><strong>Strategy Type:</strong> {details.strategyType}</p>
-      <p><strong>Min Ready Seconds:</strong> {details.minReadySeconds}</p>
-      <p><strong>Rolling Update Strategy:</strong> {details.rollingUpdateStrategy}</p>
-      <div>
-        <h3>Pod Template</h3>
-        <p><strong>Labels:</strong> {details.podTemplate.labels}</p>
-        <p><strong>Containers:</strong></p>
-        <ul>
-          <li><strong>Image:</strong> {details.podTemplate.containers.image}</li>
-          <li><strong>Port:</strong> {details.podTemplate.containers.port}</li>
-          <li><strong>Host Port:</strong> {details.podTemplate.containers.hostPort}</li>
-          <li><strong>Environment:</strong> {details.podTemplate.containers.environment}</li>
-          <li><strong>Mounts:</strong> {details.podTemplate.containers.mounts}</li>
-        </ul>
-        <p><strong>Volumes:</strong> {details.podTemplate.volumes}</p>
-      </div>
-      <div>
-        <h3>Conditions</h3>
-        <p><strong>Available:</strong> {details.conditions.available}</p>
-        <p><strong>Progressing:</strong> {details.conditions.progressing}</p>
-      </div>
-      <p><strong>Old Replica Sets:</strong> {details.oldReplicaSets}</p>
-      <p><strong>New Replica Set:</strong> {details.newReplicaSet}</p>
-      <p><strong>Events:</strong> {details.events}</p>
+      <h2>{name}</h2>
+      {renderDetails(details)}
     </div>
   );
 };

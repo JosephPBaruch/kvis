@@ -18,7 +18,7 @@ func main() {
 
 	port := os.Getenv("BACKEND_PORT")
 	if port == "" {
-		port = "8082" // Default port if not set
+		port = "8090" // Default port if not set
 	}
 
 	routes.Routes()

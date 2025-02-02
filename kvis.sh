@@ -12,14 +12,31 @@ start_backend() {
 start_frontend() {
     echo "Running the frontend..."
     cd client
-    nohup ./pipeline.sh > frontend.log 2>&1 &
+    npm run dev &
     cd ..
 }
+
+# Function to clean up processes
+cleanup() {
+    echo "Stopping the backend..."
+    pgrep go run main.go | xargs kill
+    echo "Stopping the cluster..."
+    cd dummy
+    ./pipeline.sh stop
+    cd ..
+    echo "Cleanup complete."
+    exit 0
+}
+
+# Trap SIGINT and SIGTERM to run cleanup
+trap cleanup SIGINT SIGTERM
 
 # Check if the user passed "dummy" as a parameter
 if [ "$1" == "dummy" ]; then
     echo "Running dummy k3d script..."
-    ./dummy/run_k3d.sh
+    cd dummy
+    ./pipeline.sh
+    cd ..
 fi
 
 # Start the backend and frontend
@@ -27,3 +44,9 @@ start_backend
 start_frontend
 
 echo "Both applications are now running."
+echo "Visit http://localhost:8081 to see the frontend."
+
+# Wait indefinitely to keep the script running
+while true; do
+    sleep 1
+done

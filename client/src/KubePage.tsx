@@ -4,7 +4,7 @@ import { makeStyles } from '@mui/styles';
 import Header from './components/Header';
 import { ListObjects } from './utils/http';
 import { ListObject, KubePageProps } from './types/types';
-import DetailInformation from './components/DetailInfo';
+import DetailInformation from './components/Details';
 
 const useStyles = makeStyles({
   root: {

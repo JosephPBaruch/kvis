@@ -1,4 +1,4 @@
-import { Deployment } from '../types/deployment';
+import { Deployment } from '../types/types';
 
 const baseURL = 'http://localhost:8090';
 

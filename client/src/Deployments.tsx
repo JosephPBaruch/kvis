@@ -3,7 +3,7 @@ import { Drawer, List, ListItemButton, ListItemText, Button } from "@mui/materia
 import { makeStyles } from '@mui/styles';
 import Header from './components/Header';
 import deploymentsList from './utils/http';
-import { Deployment } from './types/deployment';
+import { Deployment } from './types/types';
 
 const useStyles = makeStyles({
   root: {

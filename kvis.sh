@@ -23,7 +23,9 @@ cleanup() {
     echo "Stopping the backend and frontend..."
     kill $BACKEND_PID $FRONTEND_PID
     echo "Stopping the cluster..."
-    ./dummy/pipeline.sh stop
+    cd dummy
+    ./pipeline.sh stop
+    cd ..
     echo "Cleanup complete."
     exit 0
 }
@@ -34,7 +36,9 @@ trap cleanup SIGINT SIGTERM
 # Check if the user passed "dummy" as a parameter
 if [ "$1" == "dummy" ]; then
     echo "Running dummy k3d script..."
-    ./dummy/pipeline.sh
+    cd dummy
+    ./pipeline.sh
+    cd ..
 fi
 
 # Start the backend and frontend

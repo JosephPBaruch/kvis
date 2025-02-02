@@ -10,7 +10,7 @@ import (
 )
 
 func Get(option string) ([]types.Resource, error) {
-	cmd := exec.Command("kubectl", "get", option, "--all-namespaces", "-o", "json")
+	cmd := exec.Command("kubectl", "get", option, "-o", "json")
 	var out bytes.Buffer
 	cmd.Stdout = &out
 

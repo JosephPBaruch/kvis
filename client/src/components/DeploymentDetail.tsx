@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { DeploymentDetailProps, DeploymentDetails } from '../types/types';
 import { Details } from '../utils/http';
 
-const DeploymentDetail: React.FC<DeploymentDetailProps> = ({ name }) => {
+const DetailInformation: React.FC<DeploymentDetailProps> = ({ type, name }) => {
   const [details, setDetails] = useState<DeploymentDetails | null>(null);
 
   useEffect(() => {
     const fetchDetails = async () => {
       try {
-        const data = await Details("deployments", name);
+        const data: DeploymentDetails = await Details(type, name);
         setDetails(data);
       } catch (error) {
         console.error('Error fetching deployment details:', error);
@@ -16,7 +16,7 @@ const DeploymentDetail: React.FC<DeploymentDetailProps> = ({ name }) => {
     };
 
     fetchDetails();
-  }, [name]);
+  }, [type, name]);
 
   if (!details) {
     return <div>Loading...</div>;
@@ -47,10 +47,10 @@ const DeploymentDetail: React.FC<DeploymentDetailProps> = ({ name }) => {
 
   return (
     <div>
-      <h2>Deployment Details</h2>
+      <h1>{name}</h1>
       {renderDetails(details)}
     </div>
   );
 };
 
-export default DeploymentDetail;
+export default DetailInformation;

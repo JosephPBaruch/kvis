@@ -2,8 +2,8 @@ import { Deployment, DeploymentDetails } from '../types/types';
 
 const baseURL = 'http://localhost:8090';
 
-const deploymentsList = async (): Promise<Deployment[]> => {
-  const response = await fetch(`${baseURL}/deployments`, {
+const ListObjects = async (type: string): Promise<Deployment[]> => {
+  const response = await fetch(`${baseURL}/${type}`, {
     headers: {
       'Content-Type': 'application/json',
     },
@@ -15,7 +15,7 @@ const deploymentsList = async (): Promise<Deployment[]> => {
   return data;
 };
 
-const Details = async (subpath: string, name: string | undefined): Promise<DeploymentDetails> => {
+const Details = async (subpath: string | undefined, name: string | undefined): Promise<DeploymentDetails> => {
   const response = await fetch(`${baseURL}/${subpath}/${name}`, {
     headers: {
       'Content-Type': 'application/json',
@@ -29,6 +29,6 @@ const Details = async (subpath: string, name: string | undefined): Promise<Deplo
 };
 
 export {
-  deploymentsList,
+  ListObjects,
   Details,
 };

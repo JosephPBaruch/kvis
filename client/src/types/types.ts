@@ -1,9 +1,11 @@
 export interface Deployment {
   name: string | undefined;
+
 }
 
 export interface DeploymentDetailProps {
   name: string | undefined;
+  type: string | undefined;
 }
 
 export interface DeploymentDetails {
@@ -39,3 +41,4 @@ export interface DeploymentDetails {
 
 export type ReturnPromiseDetails = Promise<DeploymentDetails| string>;
 
+export type ReturnPromiseList = Promise<Deployment | string>;

@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { Drawer, List, ListItemButton, ListItemText, Button } from "@mui/material";
 import { makeStyles } from '@mui/styles';
 import Header from './components/Header';
-import { deploymentsList } from './utils/http';
+import { ListObjects } from './utils/http';
 import { Deployment } from './types/types';
-import DeploymentDetail from './components/DeploymentDetail';
+import DetailInformation from './components/DeploymentDetail';
 
 const useStyles = makeStyles({
   root: {
@@ -51,7 +51,7 @@ function Deployments() {
   useEffect(() => {
     const fetchDeployments = async () => {
       try {
-        const data = await deploymentsList();
+        const data = await ListObjects("deployments");
         setDeployments(data);
       } catch (error) {
         console.error('Error fetching deployments:', error);
@@ -105,7 +105,7 @@ function Deployments() {
             </Button>)}
       <div className={classes.root} style={{ marginLeft: drawerOpen ? '250px' : '50px' }}>
         {selectedDeployment && (
-          <DeploymentDetail name={selectedDeployment.name} />
+          <DetailInformation type="deployments" name={selectedDeployment.name} />
         )}
       </div>
     </>

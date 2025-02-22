@@ -10,12 +10,49 @@ CLIENT_IMAGE="kvis-client:latest"
 BACKEND_IMAGE="kvis-backend:latest"
 REGISTRY="localhost:5000"
 
+cleanup() {
+    echo "Cleaning up existing resources..."
+
+    # Delete the registry if it exists
+    if [ "$(docker ps -q -f name=registry)" ]; then
+        docker stop registry
+        docker rm registry
+    fi
+
+    # Delete the images if they exist
+    if [ "$(docker images -q $CLIENT_IMAGE 2> /dev/null)" ]; then
+        docker rmi $CLIENT_IMAGE
+    fi
+
+    if [ "$(docker images -q $BACKEND_IMAGE 2> /dev/null)" ]; then
+        docker rmi $BACKEND_IMAGE
+    fi
+
+    if [ "$(docker images -q $REGISTRY/$CLIENT_IMAGE 2> /dev/null)" ]; then
+        docker rmi $REGISTRY/$CLIENT_IMAGE
+    fi
+
+    if [ "$(docker images -q $REGISTRY/$BACKEND_IMAGE 2> /dev/null)" ]; then
+        docker rmi $REGISTRY/$BACKEND_IMAGE
+    fi
+
+    # Delete all Kubernetes resources
+    kubectl delete -f ingress.yaml
+    kubectl delete -f server_manifests/client_deployment.yaml
+    kubectl delete -f client_service.yaml
+    kubectl delete -f server_manifests/backend_deployment.yaml
+    kubectl delete -f backend_service.yaml
+    kubectl delete -f pvc.yaml
+}
+
 run() {
-    # LOADBALANCING FOR THE CORRECT PORTS
- 
-    # docker run -d -p 5000:5000 --restart=always --name registry registry:2   
+    # Cleanup existing resources
+    cleanup
 
+    # Start the Docker registry
+    docker run -d -p 5000:5000 --restart=always --name registry registry:2
 
+    # Build and push the client Docker image
     if [[ "$(docker images -q $CLIENT_IMAGE 2> /dev/null)" == "" ]]; then
         echo "Building the client Docker image..."
         cd ../client
@@ -23,6 +60,7 @@ run() {
         cd ../dummy
     fi
 
+    # Build and push the backend Docker image
     if [[ "$(docker images -q $BACKEND_IMAGE 2> /dev/null)" == "" ]]; then
         echo "Building the backend Docker image..."
         cd ../backend
@@ -36,6 +74,7 @@ run() {
     docker push $REGISTRY/$CLIENT_IMAGE
     docker push $REGISTRY/$BACKEND_IMAGE
 
+    # Apply Kubernetes manifests
     kubectl apply -f ingress.yaml
     kubectl apply -f server_manifests/client_deployment.yaml
     kubectl apply -f client_service.yaml

@@ -16,4 +16,4 @@ spec:
       - name: kvis-client
         image: localhost:5000/kvis-client:latest
         ports:
-        - containerPort: 8081
+        - containerPort: 8083

@@ -15,7 +15,7 @@ spec:
           service:
             name: kvis-client
             port:
-              number: 8081
+              number: 8083
 # ---
 # apiVersion: networking.k8s.io/v1
 # kind: Ingress

@@ -16,4 +16,4 @@ spec:
       - name: kvis-client
         image: k3d-local-registry:5001/kvis-client:latest
         ports:
-        - containerPort: 8081
+        - containerPort: 8083

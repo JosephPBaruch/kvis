@@ -9,7 +9,7 @@ spec:
   rules:
   - http:
       paths:
-      - path: /frontend/
+      - path: /frontend
         pathType: Prefix
         backend:
           service:
@@ -33,4 +33,4 @@ spec:
 #           service:
 #             name: kvis-backend
 #             port:
-              number: 8082
+              # number: 8082

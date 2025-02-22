@@ -7,6 +7,6 @@ spec:
     app: kvis-client
   ports:
     - protocol: TCP
-      port: 8081
-      targetPort: 8081
-  type: LoadBalancer
+      port: 8083
+      targetPort: 8083
+  type: ClusterIP

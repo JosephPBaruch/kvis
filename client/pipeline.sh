@@ -21,4 +21,4 @@ docker build -t $IMAGE .
 
 # Run the new Docker container
 echo "Running the new $IMAGE Docker container..."
-docker run -d -p 8081:8081 --name $IMAGE $IMAGE
+docker run -d -p 8083:8083 --name $IMAGE $IMAGE

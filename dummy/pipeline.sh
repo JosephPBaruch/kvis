@@ -101,7 +101,7 @@ start_cluster() {
     kubectl apply -f backend_service.yaml
     kubectl apply -f pvc.yaml
 
-    ./curl_pod/pipeline.sh
+    # ./curl_pod/pipeline.sh
 }
 
 # Function to stop the k3d cluster

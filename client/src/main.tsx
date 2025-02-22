@@ -5,11 +5,13 @@ import './index.css'
 import Home from './components/Home.tsx'
 import KubePage from './components/KubePage.tsx'
 
-const basename = '/frontend'; // Set the basename to match the subpath in Ingress
+// const basename = '/frontend'; // Set the basename to match the subpath in Ingress
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Router basename={basename}>
+    <Router 
+    // basename={basename}
+    >
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/deployments" element={<KubePage typeOption='deployments' />} />

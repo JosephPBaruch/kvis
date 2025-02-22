@@ -19,13 +19,13 @@ RUN npm run build
 FROM nginx:alpine
 
 # Copy the built application from the builder stage
-COPY --from=builder /client/dist /usr/share/nginx/html
+COPY --from=builder /client/dist /usr/share/nginx/html/frontend
 
 # Copy the Nginx configuration file
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Expose port 8081
-EXPOSE 8081
+# Expose port 8083
+EXPOSE 8083
 
 # Start Nginx
 CMD ["nginx", "-g", "daemon off;"]

@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kvis-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kvis-client
+  template:
+    metadata:
+      labels:
+        app: kvis-client
+    spec:
+      containers:
+      - name: kvis-client
+        image: localhost:5000/kvis-client:latest
+        ports:
+        - containerPort: 8081

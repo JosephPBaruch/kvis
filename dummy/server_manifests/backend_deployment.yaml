@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: kvis-backend
-        image: k3d-local-registry:5001/kvis-backend:latest
+        image: localhost:5000/kvis-backend:latest
         ports:
         - containerPort: 8082
         env:

@@ -42,7 +42,7 @@ cleanup() {
     kubectl delete -f client_service.yaml
     # kubectl delete -f server_manifests/backend_deployment.yaml
     # kubectl delete -f backend_service.yaml
-    kubectl delete -f pvc.yaml
+    # kubectl delete -f pvc.yaml
 }
 
 run() {
@@ -80,7 +80,7 @@ run() {
     kubectl apply -f client_service.yaml
     # kubectl apply -f server_manifests/backend_deployment.yaml
     # kubectl apply -f backend_service.yaml
-    kubectl apply -f pvc.yaml
+    # kubectl apply -f pvc.yaml
 
     # ./curl_pod/pipeline.sh
 }

@@ -16,21 +16,21 @@ spec:
             name: kvis-client
             port:
               number: 8083
-# ---
-# apiVersion: networking.k8s.io/v1
-# kind: Ingress
-# metadata:
-#   name: kvis-backend
-#   annotations:
-#     ingress.kubernetes.io/ssl-redirect: "false"
-# spec:
-#   rules:
-#   - http:
-#       paths:
-#       - path: /
-#         pathType: Prefix
-#         backend:
-#           service:
-#             name: kvis-backend
-#             port:
-              # number: 8082
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kvis-backend
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /backend
+        pathType: Prefix
+        backend:
+          service:
+            name: kvis-backend
+            port:
+              number: 8082

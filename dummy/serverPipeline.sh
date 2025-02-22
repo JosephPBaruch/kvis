@@ -12,6 +12,8 @@ REGISTRY="localhost:5000"
 
 run() {
     # LOADBALANCING FOR THE CORRECT PORTS
+ 
+    # docker run -d -p 5000:5000 --restart=always --name registry registry:2   
 
 
     if [[ "$(docker images -q $CLIENT_IMAGE 2> /dev/null)" == "" ]]; then

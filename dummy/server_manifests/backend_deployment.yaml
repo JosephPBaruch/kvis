@@ -12,6 +12,8 @@ spec:
       labels:
         app: kvis-backend
     spec:
+      serviceAccount: backend
+      serviceAccountName: backend
       containers:
       - name: kvis-backend
         image: localhost:5000/kvis-backend:latest
@@ -20,17 +22,17 @@ spec:
         env:
         - name: BACKEND_PORT
           value: "8082"
-        - name: KUBECONFIG
-          value: "/etc/rancher/k3s/k3s.yaml"
-        volumeMounts:
-        - name: kubeconfig
-          mountPath: /etc/rancher/k3s
-          readOnly: true
-      volumes:
-      - name: kubeconfig
-        hostPath:
-          path: /etc/rancher/k3s
-          type: Directory
+        # - name: KUBECONFIG
+        #   value: "/etc/rancher/k3s/k3s.yaml"
+        # volumeMounts:
+        # - name: kubeconfig
+        #   mountPath: /etc/rancher/k3s
+        #   readOnly: true
+      # volumes:
+      # - name: kubeconfig
+      #   hostPath:
+      #     path: /etc/rancher/k3s
+      #     type: Directory
       #   volumeMounts:
       #   - mountPath: "/usr/share/nginx/html"
       #     name: dummy-storage
@@ -38,3 +40,61 @@ spec:
       # - name: dummy-storage
       #   persistentVolumeClaim:
       #     claimName: dummy-pvc
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: backend
+  namespace: default
+---
+apiVersion: v1
+kind: Role
+metadata:
+  name: backend-role
+  namespace: default
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - '*'
+  verbs:
+  - '*'
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: backend-role-binding
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: backend-role
+subjects:
+- kind: ServiceAccount
+  name: backend
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: backend-role
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - '*'
+  verbs:
+  - '*'
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: backend-role-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: backend-role
+subjects:
+- kind: ServiceAccount
+  name: backend
+  namespace: default

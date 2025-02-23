@@ -20,6 +20,17 @@ spec:
         env:
         - name: BACKEND_PORT
           value: "8082"
+        - name: KUBECONFIG
+          value: "/etc/rancher/k3s/k3s.yaml"
+        volumeMounts:
+        - name: kubeconfig
+          mountPath: /etc/rancher/k3s
+          readOnly: true
+      volumes:
+      - name: kubeconfig
+        hostPath:
+          path: /etc/rancher/k3s/k3s.yaml
+          type: File
       #   volumeMounts:
       #   - mountPath: "/usr/share/nginx/html"
       #     name: dummy-storage

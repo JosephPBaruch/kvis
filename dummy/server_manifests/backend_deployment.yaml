@@ -22,24 +22,6 @@ spec:
         env:
         - name: BACKEND_PORT
           value: "8082"
-        # - name: KUBECONFIG
-        #   value: "/etc/rancher/k3s/k3s.yaml"
-        # volumeMounts:
-        # - name: kubeconfig
-        #   mountPath: /etc/rancher/k3s
-        #   readOnly: true
-      # volumes:
-      # - name: kubeconfig
-      #   hostPath:
-      #     path: /etc/rancher/k3s
-      #     type: Directory
-      #   volumeMounts:
-      #   - mountPath: "/usr/share/nginx/html"
-      #     name: dummy-storage
-      # volumes:
-      # - name: dummy-storage
-      #   persistentVolumeClaim:
-      #     claimName: dummy-pvc
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -47,18 +29,21 @@ metadata:
   name: backend
   namespace: default
 ---
-apiVersion: v1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: backend-role
   namespace: default
 rules:
-- apiGroups:
-  - ""
-  resources:
-  - '*'
-  verbs:
-  - '*'
+- apiGroups: [""]
+  resources: ["pods", "services", "endpoints"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["networking.k8s.io"]
+  resources: ["ingresses"]
+  verbs: ["get", "list", "watch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -79,12 +64,15 @@ kind: ClusterRole
 metadata:
   name: backend-role
 rules:
-- apiGroups:
-  - ""
-  resources:
-  - '*'
-  verbs:
-  - '*'
+- apiGroups: [""]
+  resources: ["pods", "services", "endpoints"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["networking.k8s.io"]
+  resources: ["ingresses"]
+  verbs: ["get", "list", "watch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -98,3 +86,24 @@ subjects:
 - kind: ServiceAccount
   name: backend
   namespace: default
+
+
+
+          # - name: KUBECONFIG
+        #   value: "/etc/rancher/k3s/k3s.yaml"
+        # volumeMounts:
+        # - name: kubeconfig
+        #   mountPath: /etc/rancher/k3s
+        #   readOnly: true
+      # volumes:
+      # - name: kubeconfig
+      #   hostPath:
+      #     path: /etc/rancher/k3s
+      #     type: Directory
+      #   volumeMounts:
+      #   - mountPath: "/usr/share/nginx/html"
+      #     name: dummy-storage
+      # volumes:
+      # - name: dummy-storage
+      #   persistentVolumeClaim:
+      #     claimName: dummy-pvc

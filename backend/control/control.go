@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"os/exec"
 	"strings"
 )
@@ -16,6 +17,7 @@ func Get(option string) ([]types.Resource, error) {
 
 	err := cmd.Run()
 	if err != nil {
+		fmt.Print(err)
 		return nil, err
 	}
 
@@ -29,6 +31,7 @@ func Get(option string) ([]types.Resource, error) {
 
 	err = json.Unmarshal(out.Bytes(), &result)
 	if err != nil {
+		fmt.Print(err)
 		return nil, err
 	}
 

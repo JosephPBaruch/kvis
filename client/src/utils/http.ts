@@ -1,6 +1,6 @@
 import { ReturnPromiseList, ReturnPromiseDetails } from '../types/types';
 
-const baseURL = 'http://localhost:8090';
+const baseURL = 'http://localhost:8090/backend';
 
 const ListObjects = async (type: string | undefined): ReturnPromiseList => {
   const response = await fetch(`${baseURL}/${type}`, {

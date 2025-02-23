@@ -1,5 +1,11 @@
 # kvis
 
+## Notes/Command
+
+export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+
+
+
 ## Overview
 
 kvis is a tool designed to provide real-time information about the Kubernetes cluster running on your system. It consists of a backend written in Go and a frontend built with React and Vite.

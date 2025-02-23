@@ -20,10 +20,10 @@ spec:
         env:
         - name: BACKEND_PORT
           value: "8082"
-        volumeMounts:
-        - mountPath: "/usr/share/nginx/html"
-          name: dummy-storage
-      volumes:
-      - name: dummy-storage
-        persistentVolumeClaim:
-          claimName: dummy-pvc
+      #   volumeMounts:
+      #   - mountPath: "/usr/share/nginx/html"
+      #     name: dummy-storage
+      # volumes:
+      # - name: dummy-storage
+      #   persistentVolumeClaim:
+      #     claimName: dummy-pvc

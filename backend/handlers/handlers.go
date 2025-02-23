@@ -77,7 +77,7 @@ func DeploymentsHandler(w http.ResponseWriter, r *http.Request) {
 
 	deployments, err := control.Get("deployments")
 	if err != nil {
-		http.Error(w, "Failed to get deployments", http.StatusInternalServerError)
+		http.Error(w, error.Error(err), http.StatusInternalServerError)
 		return
 	}
 
@@ -217,7 +217,7 @@ func IngressHandler(w http.ResponseWriter, r *http.Request) {
 
 	ingresses, err := control.Get("ingress")
 	if err != nil {
-		http.Error(w, "Failed to get ingresses", http.StatusInternalServerError)
+		http.Error(w, error.Error(err), http.StatusInternalServerError)
 		return
 	}
 

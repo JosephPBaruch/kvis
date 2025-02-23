@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"os/exec"
 	"strings"
 )
@@ -16,7 +17,7 @@ func Get(option string) ([]types.Resource, error) {
 
 	err := cmd.Run()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Error at Run(): %v", err)
 	}
 
 	var result struct {
@@ -29,7 +30,7 @@ func Get(option string) ([]types.Resource, error) {
 
 	err = json.Unmarshal(out.Bytes(), &result)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Error at Unmarshall(): %v", err)
 	}
 
 	var resources []types.Resource

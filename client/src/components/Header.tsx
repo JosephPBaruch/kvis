@@ -26,34 +26,34 @@ function Header() {
             Kvis
           </Typography>
           <Button color="inherit">
-            <a href="/" className={classes.link}>Home</a>
+            <a href="/frontend/" className={classes.link}>Home</a>
           </Button>
           <Button color="inherit">
-            <a href="/deployments" className={classes.link}>Deployments</a>
+            <a href="/frontend/deployments" className={classes.link}>Deployments</a>
           </Button>
           <Button color="inherit">
-            <a href="/pods" className={classes.link}>Pods</a>
+            <a href="/frontend/pods" className={classes.link}>Pods</a>
           </Button>
           <Button color="inherit">
-            <a href="/services" className={classes.link}>Services</a>
+            <a href="/frontend/services" className={classes.link}>Services</a>
           </Button>
           <Button color="inherit">
-            <a href="/configmaps" className={classes.link}>ConfigMaps</a>
+            <a href="/frontend/configmaps" className={classes.link}>ConfigMaps</a>
           </Button>
           <Button color="inherit">
-            <a href="/ingresses" className={classes.link}>Ingresses</a>
+            <a href="/frontend/ingresses" className={classes.link}>Ingresses</a>
           </Button>
           <Button color="inherit">
-            <a href="/pvcs" className={classes.link}>PVCs</a>
+            <a href="/frontend/pvcs" className={classes.link}>PVCs</a>
           </Button>
           <Button color="inherit">
-            <a href="/endpoints" className={classes.link}>Endpoints</a>
+            <a href="/frontend/endpoints" className={classes.link}>Endpoints</a>
           </Button>
           <Button color="inherit">
-            <a href="/nodes" className={classes.link}>Nodes</a>
+            <a href="/frontend/nodes" className={classes.link}>Nodes</a>
           </Button>
           <Button color="inherit">
-            <a href="/namespaces" className={classes.link}>Namespaces</a>
+            <a href="/frontend/namespaces" className={classes.link}>Namespaces</a>
           </Button>
         </Toolbar>
       </Container>

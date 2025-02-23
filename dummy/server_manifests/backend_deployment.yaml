@@ -29,8 +29,8 @@ spec:
       volumes:
       - name: kubeconfig
         hostPath:
-          path: /etc/rancher/k3s/k3s.yaml
-          type: File
+          path: /etc/rancher/k3s
+          type: Directory
       #   volumeMounts:
       #   - mountPath: "/usr/share/nginx/html"
       #     name: dummy-storage

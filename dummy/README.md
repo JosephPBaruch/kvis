@@ -8,3 +8,4 @@ wget -O- http://kvis-client.default.svc.cluster.local:8081
 export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 
 
+kubectl exec -it <pod-name> -- sh

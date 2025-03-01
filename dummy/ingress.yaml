@@ -4,7 +4,8 @@ kind: Ingress
 metadata:
   name: kvis-client
   annotations:
-    ingress.kubernetes.io/ssl-redirect: "false"
+    # ingress.kubernetes.io/ssl-redirect: "false"
+    traefik.ingress.kubernetes.io/router.entrypoints: "custom"
 spec:
   rules:
   - http:
